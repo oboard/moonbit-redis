@@ -14,13 +14,15 @@ pub async fn connect(host : String, port : Int) -> RedisClient {
 pub async fn RedisClient::send(
   self : RedisClient,
   args : Array[String],
-) -> Unit {
+) -> RedisValue {
+  // println(args)
   let buf = @buffer.new()
   buf.write_string("*" + args.length().to_string() + "\r\n")
   for arg in args {
     buf.write_string("$\{arg.length()}\r\n\{arg}\r\n")
   }
   self.conn.write(buf.to_string())
+  self.read_redis_value()
 }
 
 ///|
@@ -38,6 +40,7 @@ pub async fn RedisClient::read_response(self : RedisClient) -> String {
 /// 读取Redis响应并解析为RedisValue类型
 pub async fn RedisClient::read_redis_value(self : RedisClient) -> RedisValue {
   let raw_response = self.read_response()
+  // println(raw_response)
   parse_redis_response(raw_response)
 }
 

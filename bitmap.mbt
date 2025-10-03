@@ -76,9 +76,8 @@ pub async fn RedisClient::setbit(
   key : String,
   offset : Int,
   value : Bit,
-) -> String {
-  self.send(["SETBIT", key, offset.to_string(), value.to_string()])
-  self.read_response()
+) -> RedisInt {
+  self.send(["SETBIT", key, offset.to_string(), value.to_string()]).to_int()
 }
 
 ///|
@@ -86,15 +85,16 @@ pub async fn RedisClient::getbit(
   self : RedisClient,
   key : String,
   offset : Int,
-) -> String {
-  self.send(["GETBIT", key, offset.to_string()])
-  self.read_response()
+) -> RedisInt {
+  self.send(["GETBIT", key, offset.to_string()]).to_int()
 }
 
 ///|
-pub async fn RedisClient::bitcount(self : RedisClient, key : String) -> String {
-  self.send(["BITCOUNT", key])
-  self.read_response()
+pub async fn RedisClient::bitcount(
+  self : RedisClient,
+  key : String,
+) -> RedisInt {
+  self.send(["BITCOUNT", key]).to_int()
 }
 
 ///|
@@ -103,9 +103,8 @@ pub async fn RedisClient::bitcount_range(
   key : String,
   start : Int,
   end : Int,
-) -> String {
-  self.send(["BITCOUNT", key, start.to_string(), end.to_string()])
-  self.read_response()
+) -> RedisInt {
+  self.send(["BITCOUNT", key, start.to_string(), end.to_string()]).to_int()
 }
 
 ///|
@@ -113,10 +112,9 @@ pub async fn RedisClient::bitfield(
   self : RedisClient,
   key : String,
   operations : Array[BitFieldOperation],
-) -> String {
+) -> RedisArray {
   let args = ["BITFIELD", key, ..operations.map(op => op.to_array()).flatten()]
-  self.send(args)
-  self.read_response()
+  self.send(args).to_array()
 }
 
 ///|
@@ -124,10 +122,9 @@ pub async fn RedisClient::bitfield_ro(
   self : RedisClient,
   key : String,
   operations : Array[String],
-) -> String {
+) -> RedisArray {
   let args = ["BITFIELD_RO", key, ..operations]
-  self.send(args)
-  self.read_response()
+  self.send(args).to_array()
 }
 
 ///|
@@ -136,10 +133,9 @@ pub async fn RedisClient::bitop(
   operation : String,
   destkey : String,
   keys : Array[String],
-) -> String {
+) -> RedisInt {
   let args = ["BITOP", operation, destkey, ..keys]
-  self.send(args)
-  self.read_response()
+  self.send(args).to_int()
 }
 
 ///|
@@ -147,9 +143,8 @@ pub async fn RedisClient::bitpos(
   self : RedisClient,
   key : String,
   bit : Bit,
-) -> String {
-  self.send(["BITPOS", key, bit.to_string()])
-  self.read_response()
+) -> RedisInt {
+  self.send(["BITPOS", key, bit.to_string()]).to_int()
 }
 
 ///|
@@ -159,7 +154,8 @@ pub async fn RedisClient::bitpos_range(
   bit : Bit,
   start : Int,
   end : Int,
-) -> String {
-  self.send(["BITPOS", key, bit.to_string(), start.to_string(), end.to_string()])
-  self.read_response()
+) -> RedisInt {
+  self
+  .send(["BITPOS", key, bit.to_string(), start.to_string(), end.to_string()])
+  .to_int()
 }

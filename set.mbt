@@ -5,10 +5,9 @@ pub async fn RedisClient::sadd(
   self : RedisClient,
   key : String,
   members : Array[String],
-) -> String {
+) -> RedisInt {
   let args = ["SADD", key, ..members]
-  self.send(args)
-  self.read_response()
+  self.send(args).to_int()
 }
 
 ///|
@@ -16,22 +15,22 @@ pub async fn RedisClient::srem(
   self : RedisClient,
   key : String,
   members : Array[String],
-) -> String {
+) -> RedisInt {
   let args = ["SREM", key, ..members]
-  self.send(args)
-  self.read_response()
+  self.send(args).to_int()
 }
 
 ///|
-pub async fn RedisClient::smembers(self : RedisClient, key : String) -> String {
-  self.send(["SMEMBERS", key])
-  self.read_response()
+pub async fn RedisClient::smembers(
+  self : RedisClient,
+  key : String,
+) -> RedisArray {
+  self.send(["SMEMBERS", key]).to_array()
 }
 
 ///|
-pub async fn RedisClient::scard(self : RedisClient, key : String) -> String {
-  self.send(["SCARD", key])
-  self.read_response()
+pub async fn RedisClient::scard(self : RedisClient, key : String) -> RedisInt {
+  self.send(["SCARD", key]).to_int()
 }
 
 ///|
@@ -39,9 +38,8 @@ pub async fn RedisClient::sismember(
   self : RedisClient,
   key : String,
   value : String,
-) -> String {
-  self.send(["SISMEMBER", key, value])
-  self.read_response()
+) -> RedisInt {
+  self.send(["SISMEMBER", key, value]).to_int()
 }
 
 ///|
@@ -49,25 +47,22 @@ pub async fn RedisClient::smismember(
   self : RedisClient,
   key : String,
   members : Array[String],
-) -> String {
+) -> RedisArray {
   let args = ["SMISMEMBER", key, ..members]
-  self.send(args)
-  self.read_response()
+  self.send(args).to_array()
 }
 
 ///|
-pub async fn RedisClient::spop(self : RedisClient, key : String) -> String {
-  self.send(["SPOP", key])
-  self.read_response()
+pub async fn RedisClient::spop(self : RedisClient, key : String) -> RedisString {
+  self.send(["SPOP", key]).to_string()
 }
 
 ///|
 pub async fn RedisClient::srandmember(
   self : RedisClient,
   key : String,
-) -> String {
-  self.send(["SRANDMEMBER", key])
-  self.read_response()
+) -> RedisString {
+  self.send(["SRANDMEMBER", key]).to_string()
 }
 
 ///|
@@ -76,19 +71,17 @@ pub async fn RedisClient::smove(
   source : String,
   destination : String,
   value : String,
-) -> String {
-  self.send(["SMOVE", source, destination, value])
-  self.read_response()
+) -> RedisInt {
+  self.send(["SMOVE", source, destination, value]).to_int()
 }
 
 ///|
 pub async fn RedisClient::sdiff(
   self : RedisClient,
   keys : Array[String],
-) -> String {
+) -> RedisArray {
   let args = ["SDIFF", ..keys]
-  self.send(args)
-  self.read_response()
+  self.send(args).to_array()
 }
 
 ///|
@@ -96,20 +89,18 @@ pub async fn RedisClient::sdiffstore(
   self : RedisClient,
   destination : String,
   keys : Array[String],
-) -> String {
+) -> RedisInt {
   let args = ["SDIFFSTORE", destination, ..keys]
-  self.send(args)
-  self.read_response()
+  self.send(args).to_int()
 }
 
 ///|
 pub async fn RedisClient::sinter(
   self : RedisClient,
   keys : Array[String],
-) -> String {
+) -> RedisInt {
   let args = ["SINTER", ..keys]
-  self.send(args)
-  self.read_response()
+  self.send(args).to_int()
 }
 
 ///|
@@ -117,10 +108,9 @@ pub async fn RedisClient::sintercard(
   self : RedisClient,
   numkeys : String,
   keys : Array[String],
-) -> String {
+) -> RedisInt {
   let args = ["SINTERCARD", numkeys, ..keys]
-  self.send(args)
-  self.read_response()
+  self.send(args).to_int()
 }
 
 ///|
@@ -128,20 +118,18 @@ pub async fn RedisClient::sinterstore(
   self : RedisClient,
   destination : String,
   keys : Array[String],
-) -> String {
+) -> RedisInt {
   let args = ["SINTERSTORE", destination, ..keys]
-  self.send(args)
-  self.read_response()
+  self.send(args).to_int()
 }
 
 ///|
 pub async fn RedisClient::sunion(
   self : RedisClient,
   keys : Array[String],
-) -> String {
+) -> RedisInt {
   let args = ["SUNION", ..keys]
-  self.send(args)
-  self.read_response()
+  self.send(args).to_int()
 }
 
 ///|
@@ -149,18 +137,25 @@ pub async fn RedisClient::sunionstore(
   self : RedisClient,
   destination : String,
   keys : Array[String],
-) -> String {
+) -> RedisInt {
   let args = ["SUNIONSTORE", destination, ..keys]
-  self.send(args)
-  self.read_response()
+  self.send(args).to_int()
 }
 
 ///|
 pub async fn RedisClient::sscan(
   self : RedisClient,
   key : String,
-  cursor : String,
-) -> String {
-  self.send(["SSCAN", key, cursor])
-  self.read_response()
+  cursor : Int,
+  match_pattern? : String,
+  count? : Int,
+) -> RedisArray {
+  let args = ["SSCAN", key, cursor.to_string()]
+  if match_pattern is Some(m) {
+    args.push("MATCH \{m}")
+  }
+  if count is Some(c) {
+    args.push("COUNT \{c}")
+  }
+  self.send(args).to_array()
 }

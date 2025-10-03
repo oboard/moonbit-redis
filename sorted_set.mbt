@@ -1,14 +1,23 @@
 // ============ 有序集合命令 ============
 
 ///|
+pub(all) struct ZAddMember {
+  score : String
+  value : String
+}
+
+///|
 pub async fn RedisClient::zadd(
   self : RedisClient,
   key : String,
-  score : String,
-  value : String,
-) -> String {
-  self.send(["ZADD", key, score, value])
-  self.read_response()
+  zadd_members : Array[ZAddMember],
+) -> RedisValue {
+  let args = [
+      "ZADD",
+      key,
+      ..zadd_members.map(m => [m.score, m.value]).flatten(),
+    ]
+  self.send(args)
 }
 
 ///|
@@ -16,10 +25,9 @@ pub async fn RedisClient::zrem(
   self : RedisClient,
   key : String,
   members : Array[String],
-) -> String {
+) -> RedisValue {
   let args = ["ZREM", key, ..members]
   self.send(args)
-  self.read_response()
 }
 
 ///|
@@ -28,9 +36,8 @@ pub async fn RedisClient::zrange(
   key : String,
   start : String,
   stop : String,
-) -> String {
+) -> RedisValue {
   self.send(["ZRANGE", key, start, stop])
-  self.read_response()
 }
 
 ///|
@@ -39,9 +46,8 @@ pub async fn RedisClient::zrangebyscore(
   key : String,
   min : String,
   max : String,
-) -> String {
+) -> RedisValue {
   self.send(["ZRANGEBYSCORE", key, min, max])
-  self.read_response()
 }
 
 ///|
@@ -50,9 +56,8 @@ pub async fn RedisClient::zrangebylex(
   key : String,
   min : String,
   max : String,
-) -> String {
+) -> RedisValue {
   self.send(["ZRANGEBYLEX", key, min, max])
-  self.read_response()
 }
 
 ///|
@@ -61,9 +66,8 @@ pub async fn RedisClient::zrevrange(
   key : String,
   start : String,
   stop : String,
-) -> String {
+) -> RedisValue {
   self.send(["ZREVRANGE", key, start, stop])
-  self.read_response()
 }
 
 ///|
@@ -72,9 +76,8 @@ pub async fn RedisClient::zrevrangebyscore(
   key : String,
   max : String,
   min : String,
-) -> String {
+) -> RedisValue {
   self.send(["ZREVRANGEBYSCORE", key, max, min])
-  self.read_response()
 }
 
 ///|
@@ -83,9 +86,8 @@ pub async fn RedisClient::zrevrangebylex(
   key : String,
   max : String,
   min : String,
-) -> String {
+) -> RedisValue {
   self.send(["ZREVRANGEBYLEX", key, max, min])
-  self.read_response()
 }
 
 ///|
@@ -95,9 +97,8 @@ pub async fn RedisClient::zrangestore(
   src : String,
   min : String,
   max : String,
-) -> String {
+) -> RedisValue {
   self.send(["ZRANGESTORE", dst, src, min, max])
-  self.read_response()
 }
 
 ///|
@@ -105,9 +106,8 @@ pub async fn RedisClient::zscore(
   self : RedisClient,
   key : String,
   value : String,
-) -> String {
+) -> RedisValue {
   self.send(["ZSCORE", key, value])
-  self.read_response()
 }
 
 ///|
@@ -115,16 +115,14 @@ pub async fn RedisClient::zmscore(
   self : RedisClient,
   key : String,
   members : Array[String],
-) -> String {
+) -> RedisValue {
   let args = ["ZMSCORE", key, ..members]
   self.send(args)
-  self.read_response()
 }
 
 ///|
-pub async fn RedisClient::zcard(self : RedisClient, key : String) -> String {
+pub async fn RedisClient::zcard(self : RedisClient, key : String) -> RedisValue {
   self.send(["ZCARD", key])
-  self.read_response()
 }
 
 ///|
@@ -133,9 +131,8 @@ pub async fn RedisClient::zcount(
   key : String,
   min : String,
   max : String,
-) -> String {
+) -> RedisValue {
   self.send(["ZCOUNT", key, min, max])
-  self.read_response()
 }
 
 ///|
@@ -144,9 +141,8 @@ pub async fn RedisClient::zlexcount(
   key : String,
   min : String,
   max : String,
-) -> String {
+) -> RedisValue {
   self.send(["ZLEXCOUNT", key, min, max])
-  self.read_response()
 }
 
 ///|
@@ -154,9 +150,8 @@ pub async fn RedisClient::zrank(
   self : RedisClient,
   key : String,
   value : String,
-) -> String {
+) -> RedisValue {
   self.send(["ZRANK", key, value])
-  self.read_response()
 }
 
 ///|
@@ -164,32 +159,34 @@ pub async fn RedisClient::zrevrank(
   self : RedisClient,
   key : String,
   value : String,
-) -> String {
+) -> RedisValue {
   self.send(["ZREVRANK", key, value])
-  self.read_response()
 }
 
 ///|
 pub async fn RedisClient::zincrby(
   self : RedisClient,
   key : String,
-  increment : String,
-  value : String,
-) -> String {
+  increment~ : String,
+  value~ : String,
+) -> RedisValue {
   self.send(["ZINCRBY", key, increment, value])
-  self.read_response()
 }
 
 ///|
-pub async fn RedisClient::zpopmax(self : RedisClient, key : String) -> String {
+pub async fn RedisClient::zpopmax(
+  self : RedisClient,
+  key : String,
+) -> RedisValue {
   self.send(["ZPOPMAX", key])
-  self.read_response()
 }
 
 ///|
-pub async fn RedisClient::zpopmin(self : RedisClient, key : String) -> String {
+pub async fn RedisClient::zpopmin(
+  self : RedisClient,
+  key : String,
+) -> RedisValue {
   self.send(["ZPOPMIN", key])
-  self.read_response()
 }
 
 ///|
@@ -197,10 +194,9 @@ pub async fn RedisClient::bzpopmax(
   self : RedisClient,
   keys : Array[String],
   timeout : String,
-) -> String {
+) -> RedisValue {
   let args = ["BZPOPMAX", ..keys, timeout]
   self.send(args)
-  self.read_response()
 }
 
 ///|
@@ -208,19 +204,17 @@ pub async fn RedisClient::bzpopmin(
   self : RedisClient,
   keys : Array[String],
   timeout : String,
-) -> String {
+) -> RedisValue {
   let args = ["BZPOPMIN", ..keys, timeout]
   self.send(args)
-  self.read_response()
 }
 
 ///|
 pub async fn RedisClient::zrandmember(
   self : RedisClient,
   key : String,
-) -> String {
+) -> RedisValue {
   self.send(["ZRANDMEMBER", key])
-  self.read_response()
 }
 
 ///|
@@ -229,9 +223,8 @@ pub async fn RedisClient::zremrangebyrank(
   key : String,
   start : String,
   stop : String,
-) -> String {
+) -> RedisValue {
   self.send(["ZREMRANGEBYRANK", key, start, stop])
-  self.read_response()
 }
 
 ///|
@@ -240,9 +233,8 @@ pub async fn RedisClient::zremrangebyscore(
   key : String,
   min : String,
   max : String,
-) -> String {
+) -> RedisValue {
   self.send(["ZREMRANGEBYSCORE", key, min, max])
-  self.read_response()
 }
 
 ///|
@@ -251,9 +243,8 @@ pub async fn RedisClient::zremrangebylex(
   key : String,
   min : String,
   max : String,
-) -> String {
+) -> RedisValue {
   self.send(["ZREMRANGEBYLEX", key, min, max])
-  self.read_response()
 }
 
 ///|
@@ -261,10 +252,9 @@ pub async fn RedisClient::zunion(
   self : RedisClient,
   numkeys : String,
   keys : Array[String],
-) -> String {
+) -> RedisValue {
   let args = ["ZUNION", numkeys, ..keys]
   self.send(args)
-  self.read_response()
 }
 
 ///|
@@ -273,10 +263,9 @@ pub async fn RedisClient::zunionstore(
   destination : String,
   numkeys : String,
   keys : Array[String],
-) -> String {
+) -> RedisValue {
   let args = ["ZUNIONSTORE", destination, numkeys, ..keys]
   self.send(args)
-  self.read_response()
 }
 
 ///|
@@ -284,10 +273,9 @@ pub async fn RedisClient::zinter(
   self : RedisClient,
   numkeys : String,
   keys : Array[String],
-) -> String {
+) -> RedisValue {
   let args = ["ZINTER", numkeys, ..keys]
   self.send(args)
-  self.read_response()
 }
 
 ///|
@@ -295,10 +283,9 @@ pub async fn RedisClient::zintercard(
   self : RedisClient,
   numkeys : String,
   keys : Array[String],
-) -> String {
+) -> RedisValue {
   let args = ["ZINTERCARD", numkeys, ..keys]
   self.send(args)
-  self.read_response()
 }
 
 ///|
@@ -307,10 +294,9 @@ pub async fn RedisClient::zinterstore(
   destination : String,
   numkeys : String,
   keys : Array[String],
-) -> String {
+) -> RedisValue {
   let args = ["ZINTERSTORE", destination, numkeys, ..keys]
   self.send(args)
-  self.read_response()
 }
 
 ///|
@@ -318,10 +304,9 @@ pub async fn RedisClient::zdiff(
   self : RedisClient,
   numkeys : String,
   keys : Array[String],
-) -> String {
+) -> RedisValue {
   let args = ["ZDIFF", numkeys, ..keys]
   self.send(args)
-  self.read_response()
 }
 
 ///|
@@ -330,10 +315,9 @@ pub async fn RedisClient::zdiffstore(
   destination : String,
   numkeys : String,
   keys : Array[String],
-) -> String {
+) -> RedisValue {
   let args = ["ZDIFFSTORE", destination, numkeys, ..keys]
   self.send(args)
-  self.read_response()
 }
 
 ///|
@@ -342,10 +326,9 @@ pub async fn RedisClient::zmpop(
   numkeys : String,
   keys : Array[String],
   value : String,
-) -> String {
+) -> RedisValue {
   let args = ["ZMPOP", numkeys, ..keys, value]
   self.send(args)
-  self.read_response()
 }
 
 ///|
@@ -356,13 +339,12 @@ pub async fn RedisClient::bzmpop(
   keys : Array[String],
   where_ : String,
   count : String?, // optional COUNT argument
-) -> String {
+) -> RedisValue {
   let args = match count {
     Some(c) => ["BZMPOP", timeout, numkeys, ..keys, where_, "COUNT", c]
     None => ["BZMPOP", timeout, numkeys, ..keys, where_]
   }
   self.send(args)
-  self.read_response()
 }
 
 ///|
@@ -370,7 +352,6 @@ pub async fn RedisClient::zscan(
   self : RedisClient,
   key : String,
   cursor : String,
-) -> String {
+) -> RedisValue {
   self.send(["ZSCAN", key, cursor])
-  self.read_response()
 }

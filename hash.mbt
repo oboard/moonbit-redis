@@ -7,20 +7,7 @@ pub async fn RedisClient::hset(
   field : String,
   value : String,
 ) -> RedisInt {
-  self.send(["HSET", key, field, value])
-  self.read_redis_value().to_int()
-}
-
-///|
-/// HSET命令的原始字符串版本（向后兼容）
-pub async fn RedisClient::hset_raw(
-  self : RedisClient,
-  key : String,
-  field : String,
-  value : String,
-) -> String {
-  self.send(["HSET", key, field, value])
-  self.read_response()
+  self.send(["HSET", key, field, value]).to_int()
 }
 
 ///|
@@ -29,19 +16,7 @@ pub async fn RedisClient::hget(
   key : String,
   field : String,
 ) -> RedisString {
-  self.send(["HGET", key, field])
-  self.read_redis_value().to_string()
-}
-
-///|
-/// HGET命令的原始字符串版本（向后兼容）
-pub async fn RedisClient::hget_raw(
-  self : RedisClient,
-  key : String,
-  field : String,
-) -> String {
-  self.send(["HGET", key, field])
-  self.read_response()
+  self.send(["HGET", key, field]).to_string()
 }
 
 ///|
@@ -51,46 +26,17 @@ pub async fn RedisClient::hdel(
   fields : Array[String],
 ) -> RedisInt {
   let args = ["HDEL", key, ..fields]
-  self.send(args)
-  self.read_redis_value().to_int()
-}
-
-///|
-/// HDEL命令的原始字符串版本（向后兼容）
-pub async fn RedisClient::hdel_raw(
-  self : RedisClient,
-  key : String,
-  fields : Array[String],
-) -> String {
-  let args = ["HDEL", key, ..fields]
-  self.send(args)
-  self.read_response()
+  self.send(args).to_int()
 }
 
 ///|
 pub async fn RedisClient::hkeys(self : RedisClient, key : String) -> RedisArray {
-  self.send(["HKEYS", key])
-  self.read_redis_value().to_array()
-}
-
-///|
-/// HKEYS命令的原始字符串版本（向后兼容）
-pub async fn RedisClient::hkeys_raw(self : RedisClient, key : String) -> String {
-  self.send(["HKEYS", key])
-  self.read_response()
+  self.send(["HKEYS", key]).to_array()
 }
 
 ///|
 pub async fn RedisClient::hvals(self : RedisClient, key : String) -> RedisArray {
-  self.send(["HVALS", key])
-  self.read_redis_value().to_array()
-}
-
-///|
-/// HVALS命令的原始字符串版本（向后兼容）
-pub async fn RedisClient::hvals_raw(self : RedisClient, key : String) -> String {
-  self.send(["HVALS", key])
-  self.read_response()
+  self.send(["HVALS", key]).to_array()
 }
 
 ///|
@@ -98,8 +44,7 @@ pub async fn RedisClient::hgetall(
   self : RedisClient,
   key : String,
 ) -> RedisHash {
-  self.send(["HGETALL", key])
-  let redis_value = self.read_redis_value()
+  let redis_value = self.send(["HGETALL", key])
   match redis_value.to_array() {
     Result::Ok(arr) => {
       // 将平坦数组转换为键值对
@@ -116,45 +61,15 @@ pub async fn RedisClient::hgetall(
 }
 
 ///|
-/// HGETALL命令的原始字符串版本（向后兼容）
-pub async fn RedisClient::hgetall_raw(
-  self : RedisClient,
-  key : String,
-) -> String {
-  self.send(["HGETALL", key])
-  self.read_response()
-}
-
-///|
 pub async fn RedisClient::hexists(
   self : RedisClient,
   key : String,
   field : String,
 ) -> RedisBool {
-  self.send(["HEXISTS", key, field])
-  self.read_redis_value().to_bool()
-}
-
-///|
-/// HEXISTS命令的原始字符串版本（向后兼容）
-pub async fn RedisClient::hexists_raw(
-  self : RedisClient,
-  key : String,
-  field : String,
-) -> String {
-  self.send(["HEXISTS", key, field])
-  self.read_response()
+  self.send(["HEXISTS", key, field]).to_bool()
 }
 
 ///|
 pub async fn RedisClient::hlen(self : RedisClient, key : String) -> RedisInt {
-  self.send(["HLEN", key])
-  self.read_redis_value().to_int()
-}
-
-///|
-/// HLEN命令的原始字符串版本（向后兼容）
-pub async fn RedisClient::hlen_raw(self : RedisClient, key : String) -> String {
-  self.send(["HLEN", key])
-  self.read_response()
+  self.send(["HLEN", key]).to_int()
 }

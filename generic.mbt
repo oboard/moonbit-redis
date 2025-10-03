@@ -4,30 +4,27 @@
 pub async fn RedisClient::del(
   self : RedisClient,
   keys : Array[String],
-) -> String {
+) -> RedisInt {
   let args = ["DEL", ..keys]
-  self.send(args)
-  self.read_response()
+  self.send(args).to_int()
 }
 
 ///|
 pub async fn RedisClient::unlink(
   self : RedisClient,
   keys : Array[String],
-) -> String {
+) -> RedisInt {
   let args = ["UNLINK", ..keys]
-  self.send(args)
-  self.read_response()
+  self.send(args).to_int()
 }
 
 ///|
 pub async fn RedisClient::exists(
   self : RedisClient,
   keys : Array[String],
-) -> String {
+) -> RedisInt {
   let args = ["EXISTS", ..keys]
-  self.send(args)
-  self.read_response()
+  self.send(args).to_int()
 }
 
 ///|
@@ -35,9 +32,8 @@ pub async fn RedisClient::expire(
   self : RedisClient,
   key : String,
   seconds : String,
-) -> String {
-  self.send(["EXPIRE", key, seconds])
-  self.read_response()
+) -> RedisInt {
+  self.send(["EXPIRE", key, seconds]).to_int()
 }
 
 ///|
@@ -45,18 +41,16 @@ pub async fn RedisClient::expireat(
   self : RedisClient,
   key : String,
   timestamp : String,
-) -> String {
-  self.send(["EXPIREAT", key, timestamp])
-  self.read_response()
+) -> RedisInt {
+  self.send(["EXPIREAT", key, timestamp]).to_int()
 }
 
 ///|
 pub async fn RedisClient::expiretime(
   self : RedisClient,
   key : String,
-) -> String {
-  self.send(["EXPIRETIME", key])
-  self.read_response()
+) -> RedisInt {
+  self.send(["EXPIRETIME", key]).to_int()
 }
 
 ///|
@@ -64,9 +58,8 @@ pub async fn RedisClient::pexpire(
   self : RedisClient,
   key : String,
   milliseconds : String,
-) -> String {
-  self.send(["PEXPIRE", key, milliseconds])
-  self.read_response()
+) -> RedisInt {
+  self.send(["PEXPIRE", key, milliseconds]).to_int()
 }
 
 ///|
@@ -74,54 +67,52 @@ pub async fn RedisClient::pexpireat(
   self : RedisClient,
   key : String,
   timestamp : String,
-) -> String {
-  self.send(["PEXPIREAT", key, timestamp])
-  self.read_response()
+) -> RedisInt {
+  self.send(["PEXPIREAT", key, timestamp]).to_int()
 }
 
 ///|
 pub async fn RedisClient::pexpiretime(
   self : RedisClient,
   key : String,
-) -> String {
-  self.send(["PEXPIRETIME", key])
-  self.read_response()
+) -> RedisInt {
+  self.send(["PEXPIRETIME", key]).to_int()
 }
 
 ///|
-pub async fn RedisClient::ttl(self : RedisClient, key : String) -> String {
-  self.send(["TTL", key])
-  self.read_response()
+pub async fn RedisClient::ttl(self : RedisClient, key : String) -> RedisInt {
+  self.send(["TTL", key]).to_int()
 }
 
 ///|
-pub async fn RedisClient::pttl(self : RedisClient, key : String) -> String {
-  self.send(["PTTL", key])
-  self.read_response()
+pub async fn RedisClient::pttl(self : RedisClient, key : String) -> RedisInt {
+  self.send(["PTTL", key]).to_int()
 }
 
 ///|
-pub async fn RedisClient::persist(self : RedisClient, key : String) -> String {
-  self.send(["PERSIST", key])
-  self.read_response()
+pub async fn RedisClient::persist(self : RedisClient, key : String) -> RedisInt {
+  self.send(["PERSIST", key]).to_int()
 }
 
 ///|
-pub async fn RedisClient::keys(self : RedisClient, pattern : String) -> String {
-  self.send(["KEYS", pattern])
-  self.read_response()
+pub async fn RedisClient::keys(
+  self : RedisClient,
+  pattern : String,
+) -> RedisArray {
+  self.send(["KEYS", pattern]).to_array()
 }
 
 ///|
-pub async fn RedisClient::scan(self : RedisClient, cursor : String) -> String {
-  self.send(["SCAN", cursor])
-  self.read_response()
+pub async fn RedisClient::scan(
+  self : RedisClient,
+  cursor : String,
+) -> RedisArray {
+  self.send(["SCAN", cursor]).to_array()
 }
 
 ///|
-pub async fn RedisClient::randomkey(self : RedisClient) -> String {
-  self.send(["RANDOMKEY"])
-  self.read_response()
+pub async fn RedisClient::randomkey(self : RedisClient) -> RedisBulkString {
+  self.send(["RANDOMKEY"]).to_bulk_string()
 }
 
 ///|
@@ -129,9 +120,8 @@ pub async fn RedisClient::rename(
   self : RedisClient,
   key : String,
   newkey : String,
-) -> String {
-  self.send(["RENAME", key, newkey])
-  self.read_response()
+) -> RedisString {
+  self.send(["RENAME", key, newkey]).to_string()
 }
 
 ///|
@@ -139,27 +129,29 @@ pub async fn RedisClient::renamenx(
   self : RedisClient,
   key : String,
   newkey : String,
-) -> String {
-  self.send(["RENAMENX", key, newkey])
-  self.read_response()
+) -> RedisInt {
+  self.send(["RENAMENX", key, newkey]).to_int()
 }
 
 ///|
-pub async fn RedisClient::type_(self : RedisClient, key : String) -> String {
-  self.send(["TYPE", key])
-  self.read_response()
+pub async fn RedisClient::type_(
+  self : RedisClient,
+  key : String,
+) -> RedisString {
+  self.send(["TYPE", key]).to_string()
 }
 
 ///|
-pub async fn RedisClient::sort(self : RedisClient, key : String) -> String {
-  self.send(["SORT", key])
-  self.read_response()
+pub async fn RedisClient::sort(self : RedisClient, key : String) -> RedisArray {
+  self.send(["SORT", key]).to_array()
 }
 
 ///|
-pub async fn RedisClient::sort_ro(self : RedisClient, key : String) -> String {
-  self.send(["SORT_RO", key])
-  self.read_response()
+pub async fn RedisClient::sort_ro(
+  self : RedisClient,
+  key : String,
+) -> RedisArray {
+  self.send(["SORT_RO", key]).to_array()
 }
 
 ///|
@@ -167,9 +159,8 @@ pub async fn RedisClient::copy(
   self : RedisClient,
   source : String,
   destination : String,
-) -> String {
-  self.send(["COPY", source, destination])
-  self.read_response()
+) -> RedisInt {
+  self.send(["COPY", source, destination]).to_int()
 }
 
 ///|
@@ -177,9 +168,8 @@ pub async fn RedisClient::move_(
   self : RedisClient,
   key : String,
   db : String,
-) -> String {
-  self.send(["MOVE", key, db])
-  self.read_response()
+) -> RedisInt {
+  self.send(["MOVE", key, db]).to_int()
 }
 
 ///|
@@ -187,25 +177,25 @@ pub async fn RedisClient::swapdb(
   self : RedisClient,
   index1 : String,
   index2 : String,
-) -> String {
-  self.send(["SWAPDB", index1, index2])
-  self.read_response()
+) -> RedisString {
+  self.send(["SWAPDB", index1, index2]).to_string()
 }
 
 ///|
 pub async fn RedisClient::touch(
   self : RedisClient,
   keys : Array[String],
-) -> String {
+) -> RedisInt {
   let args = ["TOUCH", ..keys]
-  self.send(args)
-  self.read_response()
+  self.send(args).to_int()
 }
 
 ///|
-pub async fn RedisClient::dump(self : RedisClient, key : String) -> String {
-  self.send(["DUMP", key])
-  self.read_response()
+pub async fn RedisClient::dump(
+  self : RedisClient,
+  key : String,
+) -> RedisBulkString {
+  self.send(["DUMP", key]).to_bulk_string()
 }
 
 ///|
@@ -214,9 +204,8 @@ pub async fn RedisClient::restore(
   key : String,
   ttl : String,
   serialized_value : String,
-) -> String {
-  self.send(["RESTORE", key, ttl, serialized_value])
-  self.read_response()
+) -> RedisString {
+  self.send(["RESTORE", key, ttl, serialized_value]).to_string()
 }
 
 ///|
@@ -227,63 +216,55 @@ pub async fn RedisClient::migrate(
   key : String,
   destination_db : String,
   timeout : String,
-) -> String {
-  self.send(["MIGRATE", host, port, key, destination_db, timeout])
-  self.read_response()
+) -> RedisString {
+  self.send(["MIGRATE", host, port, key, destination_db, timeout]).to_string()
 }
 
 ///|
 pub async fn RedisClient::object_encoding(
   self : RedisClient,
   key : String,
-) -> String {
-  self.send(["OBJECT", "ENCODING", key])
-  self.read_response()
+) -> RedisBulkString {
+  self.send(["OBJECT", "ENCODING", key]).to_bulk_string()
 }
 
 ///|
 pub async fn RedisClient::object_freq(
   self : RedisClient,
   key : String,
-) -> String {
-  self.send(["OBJECT", "FREQ", key])
-  self.read_response()
+) -> RedisInt {
+  self.send(["OBJECT", "FREQ", key]).to_int()
 }
 
 ///|
 pub async fn RedisClient::object_idletime(
   self : RedisClient,
   key : String,
-) -> String {
-  self.send(["OBJECT", "IDLETIME", key])
-  self.read_response()
+) -> RedisInt {
+  self.send(["OBJECT", "IDLETIME", key]).to_int()
 }
 
 ///|
 pub async fn RedisClient::object_refcount(
   self : RedisClient,
   key : String,
-) -> String {
-  self.send(["OBJECT", "REFCOUNT", key])
-  self.read_response()
+) -> RedisInt {
+  self.send(["OBJECT", "REFCOUNT", key]).to_int()
 }
 
 ///|
-pub async fn RedisClient::flushdb(self : RedisClient) -> String {
-  self.send(["FLUSHDB"])
-  self.read_response()
+pub async fn RedisClient::flushdb(self : RedisClient) -> RedisString {
+  self.send(["FLUSHDB"]).to_string()
 }
 
 ///|
-pub async fn RedisClient::flushall(self : RedisClient) -> String {
-  self.send(["FLUSHALL"])
-  self.read_response()
+pub async fn RedisClient::flushall(self : RedisClient) -> RedisString {
+  self.send(["FLUSHALL"]).to_string()
 }
 
 ///|
-pub async fn RedisClient::dbsize(self : RedisClient) -> String {
-  self.send(["DBSIZE"])
-  self.read_response()
+pub async fn RedisClient::dbsize(self : RedisClient) -> RedisInt {
+  self.send(["DBSIZE"]).to_int()
 }
 
 ///|
@@ -291,9 +272,8 @@ pub async fn RedisClient::wait(
   self : RedisClient,
   numreplicas : String,
   timeout : String,
-) -> String {
-  self.send(["WAIT", numreplicas, timeout])
-  self.read_response()
+) -> RedisInt {
+  self.send(["WAIT", numreplicas, timeout]).to_int()
 }
 
 ///|
@@ -302,7 +282,6 @@ pub async fn RedisClient::waitaof(
   numlocal : String,
   numreplicas : String,
   timeout : String,
-) -> String {
-  self.send(["WAITAOF", numlocal, numreplicas, timeout])
-  self.read_response()
+) -> RedisInt {
+  self.send(["WAITAOF", numlocal, numreplicas, timeout]).to_int()
 }

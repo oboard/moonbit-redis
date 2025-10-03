@@ -53,9 +53,8 @@ pub async fn RedisClient::geoadd(
   longitude : String,
   latitude : String,
   value : String,
-) -> String {
-  self.send(["GEOADD", key, longitude, latitude, value])
-  self.read_response()
+) -> RedisInt {
+  self.send(["GEOADD", key, longitude, latitude, value]).to_int()
 }
 
 ///|
@@ -63,10 +62,9 @@ pub async fn RedisClient::geoadd_multiple(
   self : RedisClient,
   key : String,
   coordinates : Array[GeoCoordinates],
-) -> String {
+) -> RedisInt {
   let args = ["GEOADD", key, ..coordinates.map(c => c.to_array()).flatten()]
-  self.send(args)
-  self.read_response()
+  self.send(args).to_int()
 }
 
 ///|
@@ -75,9 +73,8 @@ pub async fn RedisClient::geodist(
   key : String,
   member1 : String,
   member2 : String,
-) -> String {
-  self.send(["GEODIST", key, member1, member2])
-  self.read_response()
+) -> RedisBulkString {
+  self.send(["GEODIST", key, member1, member2]).to_bulk_string()
 }
 
 ///|
@@ -87,9 +84,10 @@ pub async fn RedisClient::geodist_unit(
   member1 : String,
   member2 : String,
   unit : GeoUnits,
-) -> String {
-  self.send(["GEODIST", key, member1, member2, unit.to_string()])
-  self.read_response()
+) -> RedisBulkString {
+  self
+  .send(["GEODIST", key, member1, member2, unit.to_string()])
+  .to_bulk_string()
 }
 
 ///|
@@ -97,10 +95,9 @@ pub async fn RedisClient::geohash(
   self : RedisClient,
   key : String,
   members : Array[String],
-) -> String {
+) -> RedisArray {
   let args = ["GEOHASH", key, ..members]
-  self.send(args)
-  self.read_response()
+  self.send(args).to_array()
 }
 
 ///|
@@ -108,10 +105,9 @@ pub async fn RedisClient::geopos(
   self : RedisClient,
   key : String,
   members : Array[String],
-) -> String {
+) -> RedisArray {
   let args = ["GEOPOS", key, ..members]
-  self.send(args)
-  self.read_response()
+  self.send(args).to_array()
 }
 
 ///|
@@ -122,9 +118,10 @@ pub async fn RedisClient::georadius(
   latitude : String,
   radius : String,
   unit : GeoUnits,
-) -> String {
-  self.send(["GEORADIUS", key, longitude, latitude, radius, unit.to_string()])
-  self.read_response()
+) -> RedisArray {
+  self
+  .send(["GEORADIUS", key, longitude, latitude, radius, unit.to_string()])
+  .to_array()
 }
 
 ///|
@@ -135,9 +132,10 @@ pub async fn RedisClient::georadius_ro(
   latitude : String,
   radius : String,
   unit : GeoUnits,
-) -> String {
-  self.send(["GEORADIUS_RO", key, longitude, latitude, radius, unit.to_string()])
-  self.read_response()
+) -> RedisArray {
+  self
+  .send(["GEORADIUS_RO", key, longitude, latitude, radius, unit.to_string()])
+  .to_array()
 }
 
 ///|
@@ -147,9 +145,10 @@ pub async fn RedisClient::georadiusbymember(
   value : String,
   radius : String,
   unit : GeoUnits,
-) -> String {
-  self.send(["GEORADIUSBYMEMBER", key, value, radius, unit.to_string()])
-  self.read_response()
+) -> RedisArray {
+  self
+  .send(["GEORADIUSBYMEMBER", key, value, radius, unit.to_string()])
+  .to_array()
 }
 
 ///|
@@ -159,9 +158,10 @@ pub async fn RedisClient::georadiusbymember_ro(
   value : String,
   radius : String,
   unit : GeoUnits,
-) -> String {
-  self.send(["GEORADIUSBYMEMBER_RO", key, value, radius, unit.to_string()])
-  self.read_response()
+) -> RedisArray {
+  self
+  .send(["GEORADIUSBYMEMBER_RO", key, value, radius, unit.to_string()])
+  .to_array()
 }
 
 ///|
@@ -171,8 +171,9 @@ pub async fn RedisClient::geosearch(
   member_ : String,
   radius : String,
   unit : GeoUnits,
-) -> String {
-  self.send([
+) -> RedisArray {
+  self
+  .send([
     "GEOSEARCH",
     key,
     "FROMMEMBER",
@@ -181,7 +182,7 @@ pub async fn RedisClient::geosearch(
     radius,
     unit.to_string(),
   ])
-  self.read_response()
+  .to_array()
 }
 
 ///|
@@ -190,8 +191,9 @@ pub async fn RedisClient::geosearch_box(
   key : String,
   coordinates : GeoCoordinates,
   search_box : GeoSearchByBox,
-) -> String {
-  self.send(
+) -> RedisArray {
+  self
+  .send(
     [
       "GEOSEARCH",
       key,
@@ -201,7 +203,7 @@ pub async fn RedisClient::geosearch_box(
       ..search_box.to_array(),
     ],
   )
-  self.read_response()
+  .to_array()
 }
 
 ///|
@@ -212,8 +214,9 @@ pub async fn RedisClient::geosearchstore(
   member_ : String,
   radius : String,
   unit : GeoUnits,
-) -> String {
-  self.send([
+) -> RedisInt {
+  self
+  .send([
     "GEOSEARCHSTORE",
     source,
     destination,
@@ -223,7 +226,7 @@ pub async fn RedisClient::geosearchstore(
     radius,
     unit.to_string(),
   ])
-  self.read_response()
+  .to_int()
 }
 
 ///|
@@ -234,8 +237,9 @@ pub async fn RedisClient::geosearchstore_with_dist(
   member_ : String,
   radius : Double,
   unit : GeoUnits,
-) -> String {
-  self.send([
+) -> RedisInt {
+  self
+  .send([
     "GEOSEARCHSTORE",
     destination,
     source,
@@ -246,7 +250,7 @@ pub async fn RedisClient::geosearchstore_with_dist(
     unit.to_string(),
     "STOREDIST",
   ])
-  self.read_response()
+  .to_int()
 }
 
 ///|
@@ -256,8 +260,9 @@ pub async fn RedisClient::geosearch_with_dist(
   member_ : String,
   radius : Double,
   unit : GeoUnits,
-) -> String {
-  self.send([
+) -> RedisArray {
+  self
+  .send([
     "GEOSEARCH",
     key,
     "FROMMEMBER",
@@ -267,7 +272,7 @@ pub async fn RedisClient::geosearch_with_dist(
     unit.to_string(),
     "WITHDIST",
   ])
-  self.read_response()
+  .to_array()
 }
 
 ///|
@@ -277,8 +282,9 @@ pub async fn RedisClient::geosearchstore_box(
   source : String,
   from_member : String,
   search_box : GeoSearchByBox,
-) -> String {
-  self.send(
+) -> RedisInt {
+  self
+  .send(
     [
       "GEOSEARCHSTORE",
       destination,
@@ -289,5 +295,5 @@ pub async fn RedisClient::geosearchstore_box(
       ..search_box.to_array(),
     ],
   )
-  self.read_response()
+  .to_int()
 }

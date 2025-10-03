@@ -1,9 +1,9 @@
 ///|
-async test "connect" {
+async test "ping" {
   @async.with_task_group(fn(_root) {
     let client = @redis.connect("localhost", 6379)
     defer client.close()
     let pong = client.ping()
-    inspect(pong, content="+PONG\r\n")
+    assert_true(pong is Ok("PONG"))
   })
 }

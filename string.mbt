@@ -1,9 +1,8 @@
 // ============ 字符串命令 ============
 
 ///|
-pub async fn RedisClient::ping(self : RedisClient) -> String {
-  self.send(["PING"])
-  self.read_response()
+pub async fn RedisClient::ping(self : RedisClient) -> RedisString {
+  self.send(["PING"]).to_string()
 }
 
 ///|
@@ -11,15 +10,13 @@ pub async fn RedisClient::set(
   self : RedisClient,
   key : String,
   value : String,
-) -> String {
-  self.send(["SET", key, value])
-  self.read_response()
+) -> RedisString {
+  self.send(["SET", key, value]).to_string()
 }
 
 ///|
-pub async fn RedisClient::get(self : RedisClient, key : String) -> String {
-  self.send(["GET", key])
-  self.read_response()
+pub async fn RedisClient::get(self : RedisClient, key : String) -> RedisString {
+  self.send(["GET", key]).to_string()
 }
 
 ///|
@@ -27,27 +24,23 @@ pub async fn RedisClient::append(
   self : RedisClient,
   key : String,
   value : String,
-) -> String {
-  self.send(["APPEND", key, value])
-  self.read_response()
+) -> RedisInt {
+  self.send(["APPEND", key, value]).to_int()
 }
 
 ///|
-pub async fn RedisClient::strlen(self : RedisClient, key : String) -> String {
-  self.send(["STRLEN", key])
-  self.read_response()
+pub async fn RedisClient::strlen(self : RedisClient, key : String) -> RedisInt {
+  self.send(["STRLEN", key]).to_int()
 }
 
 ///|
-pub async fn RedisClient::incr(self : RedisClient, key : String) -> String {
-  self.send(["INCR", key])
-  self.read_response()
+pub async fn RedisClient::incr(self : RedisClient, key : String) -> RedisInt {
+  self.send(["INCR", key]).to_int()
 }
 
 ///|
-pub async fn RedisClient::decr(self : RedisClient, key : String) -> String {
-  self.send(["DECR", key])
-  self.read_response()
+pub async fn RedisClient::decr(self : RedisClient, key : String) -> RedisInt {
+  self.send(["DECR", key]).to_int()
 }
 
 ///|
@@ -55,9 +48,8 @@ pub async fn RedisClient::incrby(
   self : RedisClient,
   key : String,
   increment : String,
-) -> String {
-  self.send(["INCRBY", key, increment])
-  self.read_response()
+) -> RedisInt {
+  self.send(["INCRBY", key, increment]).to_int()
 }
 
 ///|
@@ -65,9 +57,8 @@ pub async fn RedisClient::decrby(
   self : RedisClient,
   key : String,
   decrement : String,
-) -> String {
-  self.send(["DECRBY", key, decrement])
-  self.read_response()
+) -> RedisInt {
+  self.send(["DECRBY", key, decrement]).to_int()
 }
 
 ///|
@@ -75,9 +66,8 @@ pub async fn RedisClient::incrbyfloat(
   self : RedisClient,
   key : String,
   increment : String,
-) -> String {
-  self.send(["INCRBYFLOAT", key, increment])
-  self.read_response()
+) -> RedisString {
+  self.send(["INCRBYFLOAT", key, increment]).to_string()
 }
 
 ///|
@@ -86,9 +76,8 @@ pub async fn RedisClient::getrange(
   key : String,
   start : String,
   end : String,
-) -> String {
-  self.send(["GETRANGE", key, start, end])
-  self.read_response()
+) -> RedisString {
+  self.send(["GETRANGE", key, start, end]).to_string()
 }
 
 ///|
@@ -97,9 +86,8 @@ pub async fn RedisClient::setrange(
   key : String,
   offset : String,
   value : String,
-) -> String {
-  self.send(["SETRANGE", key, offset, value])
-  self.read_response()
+) -> RedisInt {
+  self.send(["SETRANGE", key, offset, value]).to_int()
 }
 
 ///|
@@ -107,15 +95,16 @@ pub async fn RedisClient::getset(
   self : RedisClient,
   key : String,
   value : String,
-) -> String {
-  self.send(["GETSET", key, value])
-  self.read_response()
+) -> RedisString {
+  self.send(["GETSET", key, value]).to_string()
 }
 
 ///|
-pub async fn RedisClient::getdel(self : RedisClient, key : String) -> String {
-  self.send(["GETDEL", key])
-  self.read_response()
+pub async fn RedisClient::getdel(
+  self : RedisClient,
+  key : String,
+) -> RedisString {
+  self.send(["GETDEL", key]).to_string()
 }
 
 ///|
@@ -123,9 +112,8 @@ pub async fn RedisClient::getex(
   self : RedisClient,
   key : String,
   ex : String,
-) -> String {
-  self.send(["GETEX", key, "EX", ex])
-  self.read_response()
+) -> RedisString {
+  self.send(["GETEX", key, "EX", ex]).to_string()
 }
 
 ///|
@@ -134,9 +122,8 @@ pub async fn RedisClient::setex(
   key : String,
   seconds : String,
   value : String,
-) -> String {
-  self.send(["SETEX", key, seconds, value])
-  self.read_response()
+) -> RedisString {
+  self.send(["SETEX", key, seconds, value]).to_string()
 }
 
 ///|
@@ -145,9 +132,8 @@ pub async fn RedisClient::psetex(
   key : String,
   milliseconds : String,
   value : String,
-) -> String {
-  self.send(["PSETEX", key, milliseconds, value])
-  self.read_response()
+) -> RedisString {
+  self.send(["PSETEX", key, milliseconds, value]).to_string()
 }
 
 ///|
@@ -155,48 +141,53 @@ pub async fn RedisClient::setnx(
   self : RedisClient,
   key : String,
   value : String,
-) -> String {
-  self.send(["SETNX", key, value])
-  self.read_response()
+) -> RedisInt {
+  self.send(["SETNX", key, value]).to_int()
 }
 
 ///|
 pub async fn RedisClient::mset(
   self : RedisClient,
-  key_values : Array[String],
-) -> String {
-  let args = ["MSET", ..key_values]
-  self.send(args)
-  self.read_response()
+  key_values : Map[String, String],
+) -> RedisString {
+  let arr = key_values
+    .map(fn(k, v) -> Array[String] { [k, v] })
+    .values()
+    .to_array()
+    .flatten()
+  let args = ["MSET", ..arr]
+  self.send(args).to_string()
 }
 
 ///|
 pub async fn RedisClient::mget(
   self : RedisClient,
   keys : Array[String],
-) -> String {
+) -> RedisArray {
   let args = ["MGET", ..keys]
-  self.send(args)
-  self.read_response()
+  self.send(args).to_array()
 }
 
 ///|
 pub async fn RedisClient::msetnx(
   self : RedisClient,
-  key_values : Array[String],
-) -> String {
-  let args = ["MSETNX", ..key_values]
-  self.send(args)
-  self.read_response()
+  key_values : Map[String, String],
+) -> RedisInt {
+  let arr = key_values
+    .map(fn(k, v) -> Array[String] { [k, v] })
+    .values()
+    .to_array()
+    .flatten()
+  let args = ["MSETNX", ..arr]
+  self.send(args).to_int()
 }
 
 ///|
 pub async fn RedisClient::substr(
   self : RedisClient,
   key : String,
-  start : String,
-  end : String,
-) -> String {
-  self.send(["SUBSTR", key, start, end])
-  self.read_response()
+  start : Int,
+  end : Int,
+) -> RedisString {
+  self.send(["SUBSTR", key, start.to_string(), end.to_string()]).to_string()
 }
