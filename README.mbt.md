@@ -4,7 +4,6 @@ moonbit-redis is a modern, high performance Redis client for MoonBit.
 ## Usage
 ### Basic Example
 ```moonbit
-
 ///|
 async test "string_set_get" {
   @async.with_task_group(fn(_root) {
@@ -22,6 +21,19 @@ async test "string_set_get" {
     // Cleanup
     let _ = client.del(["test:string"])
 
+  })
+}
+```
+
+### Ping
+```moonbit
+///|
+async test "ping" {
+  @async.with_task_group(fn(_root) {
+    let client = @redis.connect("localhost", 6379)
+    defer client.close()
+    let pong = client.ping()
+    assert_true(pong is Ok("PONG"))
   })
 }
 ```
