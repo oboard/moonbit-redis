@@ -289,7 +289,7 @@ async fn RedisClient::sdiff(Self, Array[String]) -> Result[Array[String], String
 async fn RedisClient::sdiffstore(Self, String, Array[String]) -> Result[Int, String]
 async fn RedisClient::select(Self, String) -> Result[String, String]
 async fn RedisClient::send(Self, Array[String]) -> RedisValue
-async fn RedisClient::set(Self, String, String) -> Result[String, String]
+async fn RedisClient::set(Self, String, String, condition? : SetCondition, get? : Bool, expiration? : SetExpiration) -> Result[String, String]
 async fn RedisClient::setbit(Self, String, Int, Bit) -> Result[Int, String]
 async fn RedisClient::setex(Self, String, String, String) -> Result[String, String]
 async fn RedisClient::setnx(Self, String, String) -> Result[Int, String]
@@ -414,6 +414,20 @@ fn RedisValue::to_string(Self) -> Result[String, String]
 impl Eq for RedisValue
 impl Hash for RedisValue
 impl Show for RedisValue
+
+pub(all) enum SetCondition {
+  NX
+  XX
+  IFEQ(String)
+}
+
+pub(all) enum SetExpiration {
+  EX(Int)
+  PX(Int)
+  EXAT(Int)
+  PXAT(Int)
+  KEEPTTL
+}
 
 pub(all) enum XTrimStrategy {
   MaxLen

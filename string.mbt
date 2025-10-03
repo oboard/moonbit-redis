@@ -6,12 +6,83 @@ pub async fn RedisClient::ping(self : RedisClient) -> RedisString {
 }
 
 ///|
+/// SET 命令的条件选项
+pub(all) enum SetCondition {
+  /// 仅当键不存在时设置
+  NX
+  /// 仅当键存在时设置
+  XX
+  /// 仅当值等于比较值时设置
+  IFEQ(String)
+}
+
+///|
+/// SET 命令的过期时间选项
+pub(all) enum SetExpiration {
+  /// 以秒为单位设置过期时间
+  EX(Int)
+  /// 以毫秒为单位设置过期时间
+  PX(Int)
+  /// 设置过期时间为 Unix 时间戳（秒）
+  EXAT(Int)
+  /// 设置过期时间为 Unix 时间戳（毫秒）
+  PXAT(Int)
+  /// 保持现有的 TTL
+  KEEPTTL
+}
+
+///|
+/// 基本的 SET 命令
 pub async fn RedisClient::set(
   self : RedisClient,
   key : String,
   value : String,
+  condition? : SetCondition,
+  get? : Bool = false,
+  expiration? : SetExpiration,
 ) -> RedisString {
-  self.send(["SET", key, value]).to_string()
+  let args = ["SET", key, value]
+
+  // 添加条件选项
+  if condition is Some(cond) {
+    match cond {
+      NX => args.push("NX")
+      XX => args.push("XX")
+      IFEQ(comparison) => {
+        args.push("IFEQ")
+        args.push(comparison)
+      }
+    }
+  }
+
+  // 添加 GET 选项
+  if get == true {
+    args.push("GET")
+  }
+
+  // 添加过期时间选项
+  if expiration is Some(exp) {
+    match exp {
+      EX(seconds) => {
+        args.push("EX")
+        args.push(seconds.to_string())
+      }
+      PX(milliseconds) => {
+        args.push("PX")
+        args.push(milliseconds.to_string())
+      }
+      EXAT(timestamp) => {
+        args.push("EXAT")
+        args.push(timestamp.to_string())
+      }
+      PXAT(timestamp) => {
+        args.push("PXAT")
+        args.push(timestamp.to_string())
+      }
+      KEEPTTL => args.push("KEEPTTL")
+    }
+  }
+  self.send(args).to_string()
 }
 
 ///|
