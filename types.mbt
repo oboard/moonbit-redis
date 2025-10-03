@@ -24,6 +24,9 @@ pub typealias Result[T, String] as RedisResult[T]
 pub typealias RedisResult[String] as RedisString
 
 ///|
+pub typealias RedisResult[Json] as RedisJson
+
+///|
 pub typealias RedisResult[String?] as RedisBulkString
 
 ///|
@@ -147,6 +150,12 @@ pub fn RedisValue::to_string(self : RedisValue) -> RedisString {
     Error(e) => Err(e)
     _ => Err("Type mismatch: expected string")
   }
+}
+
+///|
+/// 将RedisValue转换为JSON
+pub fn RedisValue::to_json(self : RedisValue) -> RedisJson {
+  self.to_string().map(s => @json.parse(s) catch { _ => Json::null() })
 }
 
 ///|

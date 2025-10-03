@@ -7,8 +7,8 @@ pub async fn RedisClient::json_set(
   key : String,
   path : String,
   value : String,
-) -> RedisString {
-  self.send(["JSON.SET", key, path, value]).to_string()
+) -> RedisJson {
+  self.send(["JSON.SET", key, path, value]).to_json()
 }
 
 ///|
@@ -17,8 +17,8 @@ pub async fn RedisClient::json_get(
   self : RedisClient,
   key : String,
   path : String,
-) -> RedisString {
-  self.send(["JSON.GET", key, path]).to_string()
+) -> RedisJson {
+  self.send(["JSON.GET", key, path]).to_json()
 }
 
 ///|
