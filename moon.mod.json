@@ -12,5 +12,6 @@
     "client",
     "valkey"
   ],
-  "description": "A modern, high performance Redis client for MoonBit."
+  "description": "A modern, high performance Redis client for MoonBit.",
+  "preferred-target": "native"
 }
