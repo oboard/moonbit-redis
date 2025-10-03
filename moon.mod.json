@@ -5,8 +5,12 @@
     "moonbitlang/async": "0.8.1"
   },
   "readme": "README.mbt.md",
-  "repository": "",
+  "repository": "https://github.com/oboard/moonbit-redis",
   "license": "Apache-2.0",
-  "keywords": [],
-  "description": ""
+  "keywords": [
+    "redis",
+    "client",
+    "valkey"
+  ],
+  "description": "A modern, high performance Redis client for MoonBit."
 }
