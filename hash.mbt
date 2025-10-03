@@ -46,17 +46,17 @@ pub async fn RedisClient::hgetall(
 ) -> RedisHash {
   let redis_value = self.send(["HGETALL", key])
   match redis_value.to_array() {
-    Result::Ok(arr) => {
+    Ok(arr) => {
       // 将平坦数组转换为键值对
-      let pairs = Array::new()
+      let pairs = Map::new()
       let mut i = 0
       while i < arr.length() - 1 {
-        pairs.push((arr[i], arr[i + 1]))
+        pairs.set(arr[i], arr[i + 1])
         i = i + 2
       }
-      Result::Ok(pairs)
+      Ok(pairs)
     }
-    Result::Err(e) => Result::Err(e)
+    Err(e) => Err(e)
   }
 }
 

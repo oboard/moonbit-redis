@@ -18,11 +18,11 @@ async test "string_set_get" {
 
     // 测试SET
     let set_result = client.set("test:string", "hello_world")
-    assert_true(set_result is Result::Ok("OK"))
+    assert_true(set_result is Ok("OK"))
 
     // 测试GET
     let get_result = client.get("test:string")
-    assert_true(get_result is Result::Ok("hello_world"))
+    assert_true(get_result is Ok("hello_world"))
 
     // 清理
     let _ = client.del(["test:string"])
@@ -42,11 +42,11 @@ async test "string_append" {
 
     // 测试APPEND
     let append_result = client.append("test:string", "_world")
-    assert_true(append_result is Result::Ok(11)) // "hello_world"的长度
+    assert_true(append_result is Ok(11)) // "hello_world"的长度
 
     // 验证结果
     let get_result = client.get("test:string")
-    assert_true(get_result is Result::Ok("hello_world"))
+    assert_true(get_result is Ok("hello_world"))
 
     // 清理
     let _ = client.del(["test:string"])
@@ -66,11 +66,11 @@ async test "string_incr_decr" {
 
     // 测试INCR
     let incr_result = client.incr("test:counter")
-    assert_true(incr_result is Result::Ok(11))
+    assert_true(incr_result is Ok(11))
 
     // 测试DECR
     let decr_result = client.decr("test:counter")
-    assert_true(decr_result is Result::Ok(10))
+    assert_true(decr_result is Ok(10))
 
     // 清理
     let _ = client.del(["test:counter"])
@@ -90,7 +90,7 @@ async test "string_strlen" {
 
     // 测试STRLEN
     let strlen_result = client.strlen("test:string")
-    assert_true(strlen_result is Result::Ok(5))
+    assert_true(strlen_result is Ok(5))
 
     // 清理
     let _ = client.del(["test:string"])
@@ -107,11 +107,11 @@ async test "string_mset_mget" {
 
     // 测试MSET
     let mset_result = client.mset({ "key1": "value1", "key2": "value2" })
-    assert_true(mset_result is Result::Ok("OK"))
+    assert_true(mset_result is Ok("OK"))
 
     // 测试MGET
     let mget_result = client.mget(["key1", "key2"])
-    assert_true(mget_result is Result::Ok(["value1", "value2"]))
+    assert_true(mget_result is Ok(["value1", "value2"]))
 
     // 清理
     let _ = client.del(["key1", "key2"])

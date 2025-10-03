@@ -12,11 +12,11 @@ async test "string_set_get" {
 
     // SET
     let set_result = client.set("test:string", "hello_world")
-    assert_true(set_result is Result::Ok("OK"))
+    assert_true(set_result is Ok("OK"))
 
     // GET
     let get_result = client.get("test:string")
-    assert_true(get_result is Result::Ok("hello_world"))
+    assert_true(get_result is Ok("hello_world"))
 
     // Cleanup
     let _ = client.del(["test:string"])

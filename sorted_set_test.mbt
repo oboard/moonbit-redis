@@ -13,11 +13,11 @@ async test "zset_zadd_zrem" {
       { score: "2", value: "member2" },
       { score: "3", value: "member3" },
     ])
-    inspect(zadd_result is Integer(3), content="true") // 添加了3个成员
+    assert_true(zadd_result is Ok(3)) // 添加了3个成员
 
     // 测试ZREM
     let zrem_result = client.zrem("test:zset", ["member1"])
-    inspect(zrem_result is Integer(1), content="true")
+    assert_true(zrem_result is Ok(1))
 
     // 清理
     let _ = client.del(["test:zset"])
@@ -41,7 +41,7 @@ async test "zset_zcard" {
 
     // 测试ZCARD
     let zcard_result = client.zcard("test:zset")
-    inspect(zcard_result is Integer(3), content="true")
+    assert_true(zcard_result is Ok(3))
 
     // 清理
     let _ = client.del(["test:zset"])
@@ -64,7 +64,7 @@ async test "zset_zscore" {
 
     // 测试ZSCORE
     let zscore_result = client.zscore("test:zset", "member1")
-    inspect(zscore_result is SimpleString("1.5"), content="true")
+    assert_true(zscore_result is Ok("1.5"))
 
     // 清理
     let _ = client.del(["test:zset"])
@@ -88,7 +88,7 @@ async test "zset_zrank" {
 
     // 测试ZRANK
     let zrank_result = client.zrank("test:zset", "member2")
-    inspect(zrank_result is Integer(1), content="true") // 0-based index  
+    assert_true(zrank_result is Ok(1)) // 0-based index  
 
     // 清理
     let _ = client.del(["test:zset"])
@@ -111,10 +111,8 @@ async test "zset_zrange" {
     ])
 
     // 测试ZRANGE
-    let zrange_result = client.zrange("test:zset", "0", "-1")
-    inspect(zrange_result is SimpleString("member1"), content="true")
-    inspect(zrange_result is SimpleString("member2"), content="true")
-    inspect(zrange_result is SimpleString("member3"), content="true")
+    let zrange_result = client.zrange("test:zset", start="0", stop="-1")
+    assert_true(zrange_result is Ok(["member1", "member2", "member3"]))
 
     // 清理
     let _ = client.del(["test:zset"])
@@ -137,17 +135,8 @@ async test "zset_zrevrange" {
     ])
 
     // 测试ZREVRANGE
-    let zrevrange_result = client.zrevrange("test:zset", "0", "-1")
-    assert_true(
-      zrevrange_result
-      is Array(
-        [
-          BulkString(Some("member3")),
-          BulkString(Some("member2")),
-          BulkString(Some("member1")),
-        ]
-      ),
-    )
+    let zrevrange_result = client.zrevrange("test:zset", start="0", stop="-1")
+    assert_true(zrevrange_result is Ok(["member3", "member2", "member1"]))
 
     // 清理
     let _ = client.del(["test:zset"])
@@ -173,11 +162,11 @@ async test "zset_zincrby" {
       increment="2.5",
       value="member1",
     )
-    assert_true(zincrby_result is BulkString(Some("3.5")))
+    assert_true(zincrby_result is Ok("3.5"))
 
     // 验证新分数
     let zscore_result = client.zscore("test:zset", "member1")
-    assert_true(zscore_result is BulkString(Some("3.5")))
+    assert_true(zscore_result is Ok("3.5"))
 
     // 清理
     let _ = client.del(["test:zset"])

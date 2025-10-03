@@ -13,7 +13,7 @@ pub(all) enum RedisValue {
   BulkString(String?)
   // 数组: *count\r\n<element1><element2>...
   Array(Array[RedisValue])
-} derive(Show)
+} derive(Show, Hash, Eq)
 
 ///|
 /// Redis命令的结果类型
@@ -36,15 +36,105 @@ pub typealias RedisResult[Bool] as RedisBool
 pub typealias RedisResult[Array[String]] as RedisArray
 
 ///|
-pub typealias RedisResult[Array[(String, String)]] as RedisHash
+pub typealias RedisResult[Map[String, String]] as RedisHash
+
+///|
+pub typealias RedisResult[RedisStream] as RedisStreamResult
+
+///|
+pub typealias RedisResult[Array[RedisStreamMessage]] as RedisStreamMessageArray
+
+///|
+pub(all) struct RedisStreamMessage {
+  id : String
+  fields : Array[String]
+} derive(Show)
+
+///|
+pub(all) struct RedisStream {
+  name : String
+  messages : Array[RedisStreamMessage]
+} derive(Show)
+
+///|
+pub fn RedisValue::to_stream(self : RedisValue) -> RedisStreamResult {
+  match self {
+    Array(streams) =>
+      // Redis Stream 响应格式: [[stream_name, [[id, [field, value, ...]], ...]]]
+      match streams[0] {
+        Array(stream_data) =>
+          if stream_data.length() >= 2 {
+            let stream_name = match stream_data[0].to_string() {
+              Ok(name) => name
+              Err(_) => ""
+            }
+            let messages = match stream_data[1] {
+              Array(msg_array) => parse_stream_messages(msg_array)
+              _ => []
+            }
+            Ok({ name: stream_name, messages })
+          } else {
+            Err("Invalid stream data: expected array with at least 2 elements")
+          }
+        _ => Err("Invalid stream data: expected array")
+      }
+    _ => Err("Invalid stream data: expected array")
+  }
+}
+
+///|
+/// 解析 Stream 消息数组
+fn parse_stream_messages(
+  msg_array : Array[RedisValue],
+) -> Array[RedisStreamMessage] {
+  let messages = Array::new()
+  for msg in msg_array {
+    match msg {
+      Array(msg_data) =>
+        if msg_data.length() >= 2 {
+          let id = match msg_data[0].to_string() {
+            Ok(id_str) => id_str
+            Err(_) => ""
+          }
+          let fields = match msg_data[1] {
+            Array(field_array) => {
+              let field_strings = Array::new()
+              for field in field_array {
+                match field.to_string() {
+                  Ok(field_str) => field_strings.push(field_str)
+                  Err(_) => ()
+                }
+              }
+              field_strings
+            }
+            _ => []
+          }
+          messages.push({ id, fields })
+        }
+      _ => ()
+    }
+  }
+  messages
+}
+
+///|
+/// 将RedisValue转换为Stream消息数组（用于XRANGE等命令）
+pub fn RedisValue::to_stream_message_array(
+  self : RedisValue,
+) -> RedisStreamMessageArray {
+  match self {
+    Array(msg_array) => Ok(parse_stream_messages(msg_array))
+    _ => Err("Invalid stream message array")
+  }
+}
 
 ///|
 /// 将RedisValue转换为具体类型
 pub fn RedisValue::to_bulk_string(self : RedisValue) -> RedisBulkString {
   match self {
-    BulkString(Some(s)) => Result::Ok(Some(s))
-    Error(e) => Result::Err(e)
-    _ => Result::Err("Type mismatch: expected string")
+    BulkString(Some(s)) => Ok(Some(s))
+    Error(e) => Err(e)
+    _ => Err("Type mismatch: expected string")
   }
 }
 
@@ -52,10 +142,10 @@ pub fn RedisValue::to_bulk_string(self : RedisValue) -> RedisBulkString {
 /// 将RedisValue转换为具体类型
 pub fn RedisValue::to_string(self : RedisValue) -> RedisString {
   match self {
-    SimpleString(s) => Result::Ok(s)
-    BulkString(Some(s)) => Result::Ok(s)
-    Error(e) => Result::Err(e)
-    _ => Result::Err("Type mismatch: expected string")
+    SimpleString(s) => Ok(s)
+    BulkString(Some(s)) => Ok(s)
+    Error(e) => Err(e)
+    _ => Err("Type mismatch: expected string")
   }
 }
 
@@ -63,9 +153,9 @@ pub fn RedisValue::to_string(self : RedisValue) -> RedisString {
 /// 将RedisValue转换为整数
 pub fn RedisValue::to_int(self : RedisValue) -> RedisInt {
   match self {
-    Integer(i) => Result::Ok(i)
-    Error(e) => Result::Err(e)
-    _ => Result::Err("Type mismatch: expected integer")
+    Integer(i) => Ok(i)
+    Error(e) => Err(e)
+    _ => Err("Type mismatch: expected integer")
   }
 }
 
@@ -73,15 +163,15 @@ pub fn RedisValue::to_int(self : RedisValue) -> RedisInt {
 /// 将RedisValue转换为布尔值
 pub fn RedisValue::to_bool(self : RedisValue) -> RedisBool {
   match self {
-    Integer(i) => Result::Ok(i != 0)
-    SimpleString(s) => Result::Ok(s == "OK")
-    Error(e) => Result::Err(e)
-    _ => Result::Err("Type mismatch: expected boolean")
+    Integer(i) => Ok(i != 0)
+    SimpleString(s) => Ok(s == "OK")
+    Error(e) => Err(e)
+    _ => Err("Type mismatch: expected boolean")
   }
 }
 
 ///|
-/// 将RedisValue转换为字符串数组
+/// 将RedisValue转换为数组
 pub fn RedisValue::to_array(self : RedisValue) -> RedisArray {
   match self {
     Array(arr) => {
