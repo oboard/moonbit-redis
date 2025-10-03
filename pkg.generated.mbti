@@ -80,9 +80,9 @@ async fn RedisClient::blmpop(Self, timeout~ : Int, String, Array[String], where_
 async fn RedisClient::blpop(Self, Array[String], timeout~ : Int) -> RedisValue
 async fn RedisClient::brpop(Self, Array[String], timeout~ : Int) -> RedisValue
 async fn RedisClient::brpoplpush(Self, String, String, timeout~ : Int) -> RedisValue
-async fn RedisClient::bzmpop(Self, String, String, Array[String], String, String?) -> RedisValue
-async fn RedisClient::bzpopmax(Self, Array[String], String) -> RedisValue
-async fn RedisClient::bzpopmin(Self, Array[String], String) -> RedisValue
+async fn RedisClient::bzmpop(Self, String, String, Array[String], String, String?) -> Result[Array[String], String]
+async fn RedisClient::bzpopmax(Self, Array[String], String) -> Result[String, String]
+async fn RedisClient::bzpopmin(Self, Array[String], String) -> Result[String, String]
 async fn RedisClient::client_caching(Self, String) -> Result[String, String]
 async fn RedisClient::client_getname(Self) -> Result[String?, String]
 async fn RedisClient::client_getredir(Self) -> Result[Int, String]
@@ -180,7 +180,7 @@ async fn RedisClient::hdel(Self, String, Array[String]) -> Result[Int, String]
 async fn RedisClient::hello(Self, String) -> Result[Array[String], String]
 async fn RedisClient::hexists(Self, String, String) -> Result[Bool, String]
 async fn RedisClient::hget(Self, String, String) -> Result[String, String]
-async fn RedisClient::hgetall(Self, String) -> Result[Array[(String, String)], String]
+async fn RedisClient::hgetall(Self, String) -> Result[Map[String, String], String]
 async fn RedisClient::hkeys(Self, String) -> Result[Array[String], String]
 async fn RedisClient::hlen(Self, String) -> Result[Int, String]
 async fn RedisClient::hset(Self, String, String, String) -> Result[Int, String]
@@ -331,38 +331,71 @@ async fn RedisClient::unsubscribe(Self, channels? : Array[String]) -> Result[Arr
 async fn RedisClient::wait(Self, String, String) -> Result[Int, String]
 async fn RedisClient::waitaof(Self, String, String, String) -> Result[Int, String]
 async fn RedisClient::write(Self, String) -> Unit
-async fn RedisClient::zadd(Self, String, Array[ZAddMember]) -> RedisValue
-async fn RedisClient::zcard(Self, String) -> RedisValue
-async fn RedisClient::zcount(Self, String, String, String) -> RedisValue
-async fn RedisClient::zdiff(Self, String, Array[String]) -> RedisValue
-async fn RedisClient::zdiffstore(Self, String, String, Array[String]) -> RedisValue
-async fn RedisClient::zincrby(Self, String, increment~ : String, value~ : String) -> RedisValue
-async fn RedisClient::zinter(Self, String, Array[String]) -> RedisValue
-async fn RedisClient::zintercard(Self, String, Array[String]) -> RedisValue
-async fn RedisClient::zinterstore(Self, String, String, Array[String]) -> RedisValue
-async fn RedisClient::zlexcount(Self, String, String, String) -> RedisValue
-async fn RedisClient::zmpop(Self, String, Array[String], String) -> RedisValue
-async fn RedisClient::zmscore(Self, String, Array[String]) -> RedisValue
-async fn RedisClient::zpopmax(Self, String) -> RedisValue
-async fn RedisClient::zpopmin(Self, String) -> RedisValue
-async fn RedisClient::zrandmember(Self, String) -> RedisValue
-async fn RedisClient::zrange(Self, String, String, String) -> RedisValue
-async fn RedisClient::zrangebylex(Self, String, String, String) -> RedisValue
-async fn RedisClient::zrangebyscore(Self, String, String, String) -> RedisValue
-async fn RedisClient::zrangestore(Self, String, String, String, String) -> RedisValue
-async fn RedisClient::zrank(Self, String, String) -> RedisValue
-async fn RedisClient::zrem(Self, String, Array[String]) -> RedisValue
-async fn RedisClient::zremrangebylex(Self, String, String, String) -> RedisValue
-async fn RedisClient::zremrangebyrank(Self, String, String, String) -> RedisValue
-async fn RedisClient::zremrangebyscore(Self, String, String, String) -> RedisValue
-async fn RedisClient::zrevrange(Self, String, String, String) -> RedisValue
-async fn RedisClient::zrevrangebylex(Self, String, String, String) -> RedisValue
-async fn RedisClient::zrevrangebyscore(Self, String, String, String) -> RedisValue
-async fn RedisClient::zrevrank(Self, String, String) -> RedisValue
-async fn RedisClient::zscan(Self, String, String) -> RedisValue
-async fn RedisClient::zscore(Self, String, String) -> RedisValue
-async fn RedisClient::zunion(Self, String, Array[String]) -> RedisValue
-async fn RedisClient::zunionstore(Self, String, String, Array[String]) -> RedisValue
+async fn RedisClient::xack(Self, String, String, Array[String]) -> Result[Int, String]
+async fn RedisClient::xadd(Self, String, String, Map[String, String]) -> Result[String, String]
+async fn RedisClient::xautoclaim(Self, String, String, String, Int, start~ : String, count? : Int) -> Result[Array[String], String]
+async fn RedisClient::xclaim(Self, String, String, String, Int, Array[String]) -> Result[Array[String], String]
+async fn RedisClient::xdel(Self, String, Array[String]) -> Result[Int, String]
+async fn RedisClient::xgroup_create(Self, String, String, String, Bool) -> Result[String, String]
+async fn RedisClient::xgroup_createconsumer(Self, String, String, String) -> Result[Int, String]
+async fn RedisClient::xgroup_delconsumer(Self, String, String, String) -> Result[Int, String]
+async fn RedisClient::xgroup_destroy(Self, String, String) -> Result[Int, String]
+async fn RedisClient::xgroup_setid(Self, String, String, String) -> Result[String, String]
+async fn RedisClient::xinfo_consumers(Self, String, String) -> Result[Array[String], String]
+async fn RedisClient::xinfo_groups(Self, String) -> Result[Array[String], String]
+async fn RedisClient::xinfo_stream(Self, String) -> Result[Array[String], String]
+async fn RedisClient::xlen(Self, String) -> Result[Int, String]
+async fn RedisClient::xpending(Self, String, String) -> Result[Array[String], String]
+async fn RedisClient::xpending_range(Self, String, String, start~ : String, end~ : String, count~ : Int, consumer? : String) -> Result[Array[String], String]
+async fn RedisClient::xrange(Self, String, start~ : String, end~ : String, count? : Int) -> Result[Array[RedisStreamMessage], String]
+async fn RedisClient::xread(Self, count? : Int, block? : Int, Array[(String, String)]) -> Result[RedisStream, String]
+async fn RedisClient::xreadgroup(Self, String, String, count? : Int, block? : Int, noack? : Bool, Array[(String, String)]) -> Result[RedisStream, String]
+async fn RedisClient::xrevrange(Self, String, end~ : String, start~ : String, count? : Int) -> Result[Array[RedisStreamMessage], String]
+async fn RedisClient::xtrim(Self, String, strategy~ : XTrimStrategy, threshold~ : Int64, approximate? : Bool, limit? : Int, keepref? : Bool, delref? : Bool, acked? : Bool) -> Result[Int, String]
+async fn RedisClient::zadd(Self, String, Array[ZAddMember]) -> Result[Int, String]
+async fn RedisClient::zcard(Self, String) -> Result[Int, String]
+async fn RedisClient::zcount(Self, String, min~ : String, max~ : String) -> Result[Int, String]
+async fn RedisClient::zdiff(Self, String, Array[String]) -> Result[Array[String], String]
+async fn RedisClient::zdiffstore(Self, String, String, Array[String]) -> Result[Int, String]
+async fn RedisClient::zincrby(Self, String, increment~ : String, value~ : String) -> Result[String, String]
+async fn RedisClient::zinter(Self, String, Array[String]) -> Result[Array[String], String]
+async fn RedisClient::zintercard(Self, String, Array[String]) -> Result[Int, String]
+async fn RedisClient::zinterstore(Self, String, String, Array[String]) -> Result[Int, String]
+async fn RedisClient::zlexcount(Self, String, min~ : String, max~ : String) -> Result[Int, String]
+async fn RedisClient::zmpop(Self, String, Array[String], String) -> Result[Array[String], String]
+async fn RedisClient::zmscore(Self, String, Array[String]) -> Result[Array[String], String]
+async fn RedisClient::zpopmax(Self, String) -> Result[String, String]
+async fn RedisClient::zpopmin(Self, String) -> Result[String, String]
+async fn RedisClient::zrandmember(Self, String) -> Result[String, String]
+async fn RedisClient::zrange(Self, String, start~ : String, stop~ : String) -> Result[Array[String], String]
+async fn RedisClient::zrangebylex(Self, String, min~ : String, max~ : String) -> Result[Array[String], String]
+async fn RedisClient::zrangebyscore(Self, String, min~ : String, max~ : String) -> Result[Array[String], String]
+async fn RedisClient::zrangestore(Self, String, String, min~ : String, max~ : String) -> Result[Int, String]
+async fn RedisClient::zrank(Self, String, String) -> Result[Int, String]
+async fn RedisClient::zrem(Self, String, Array[String]) -> Result[Int, String]
+async fn RedisClient::zremrangebylex(Self, String, String, String) -> Result[Int, String]
+async fn RedisClient::zremrangebyrank(Self, String, String, String) -> Result[Int, String]
+async fn RedisClient::zremrangebyscore(Self, String, String, String) -> Result[Int, String]
+async fn RedisClient::zrevrange(Self, String, start~ : String, stop~ : String) -> Result[Array[String], String]
+async fn RedisClient::zrevrangebylex(Self, String, max~ : String, min~ : String) -> Result[Array[String], String]
+async fn RedisClient::zrevrangebyscore(Self, String, max~ : String, min~ : String) -> Result[Array[String], String]
+async fn RedisClient::zrevrank(Self, String, String) -> Result[Int, String]
+async fn RedisClient::zscan(Self, String, String) -> Result[Array[String], String]
+async fn RedisClient::zscore(Self, String, String) -> Result[String, String]
+async fn RedisClient::zunion(Self, String, Array[String]) -> Result[Array[String], String]
+async fn RedisClient::zunionstore(Self, String, String, Array[String]) -> Result[Int, String]
+
+pub(all) struct RedisStream {
+  name : String
+  messages : Array[RedisStreamMessage]
+}
+impl Show for RedisStream
+
+pub(all) struct RedisStreamMessage {
+  id : String
+  fields : Array[String]
+}
+impl Show for RedisStreamMessage
 
 pub(all) enum RedisValue {
   SimpleString(String)
@@ -375,8 +408,17 @@ fn RedisValue::to_array(Self) -> Result[Array[String], String]
 fn RedisValue::to_bool(Self) -> Result[Bool, String]
 fn RedisValue::to_bulk_string(Self) -> Result[String?, String]
 fn RedisValue::to_int(Self) -> Result[Int, String]
+fn RedisValue::to_stream(Self) -> Result[RedisStream, String]
+fn RedisValue::to_stream_message_array(Self) -> Result[Array[RedisStreamMessage], String]
 fn RedisValue::to_string(Self) -> Result[String, String]
+impl Eq for RedisValue
+impl Hash for RedisValue
 impl Show for RedisValue
+
+pub(all) enum XTrimStrategy {
+  MaxLen
+  MinID
+}
 
 pub(all) struct ZAddMember {
   score : String
@@ -390,11 +432,15 @@ pub typealias Result[Bool, String] as RedisBool
 
 pub typealias Result[String?, String] as RedisBulkString
 
-pub typealias Result[Array[(String, String)], String] as RedisHash
+pub typealias Result[Map[String, String], String] as RedisHash
 
 pub typealias Result[Int, String] as RedisInt
 
 pub typealias Result[T, String] as RedisResult[T]
+
+pub typealias Result[Array[RedisStreamMessage], String] as RedisStreamMessageArray
+
+pub typealias Result[RedisStream, String] as RedisStreamResult
 
 pub typealias Result[String, String] as RedisString
 
