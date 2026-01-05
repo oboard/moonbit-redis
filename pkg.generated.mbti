@@ -6,9 +6,9 @@ import(
 )
 
 // Values
-async fn connect(String, Int) -> RedisClient
+pub async fn connect(String, Int) -> RedisClient
 
-fn parse_redis_response(String) -> RedisValue
+pub fn parse_redis_response(String) -> RedisValue
 
 // Errors
 
@@ -17,7 +17,7 @@ pub(all) enum Bit {
   Zero
   One
 }
-impl Show for Bit
+pub impl Show for Bit
 
 pub(all) enum BitFieldEncoding {
   U8
@@ -29,7 +29,7 @@ pub(all) enum BitFieldEncoding {
   I32
   I64
 }
-impl Show for BitFieldEncoding
+pub impl Show for BitFieldEncoding
 
 pub(all) enum BitFieldOperation {
   Get(encoding~ : BitFieldEncoding, offset~ : Int)
@@ -37,20 +37,20 @@ pub(all) enum BitFieldOperation {
   Incrby(encoding~ : BitFieldEncoding, offset~ : Int, value~ : Int)
   Overflow(behavior~ : String)
 }
-fn BitFieldOperation::to_array(Self) -> Array[String]
+pub fn BitFieldOperation::to_array(Self) -> Array[String]
 
 pub(all) struct GeoCoordinates {
   longitude : Double
   latitude : Double
 }
-fn GeoCoordinates::to_array(Self) -> Array[String]
+pub fn GeoCoordinates::to_array(Self) -> Array[String]
 
 pub(all) struct GeoSearchByBox {
   width : Int
   height : Int
   unit : GeoUnits
 }
-fn GeoSearchByBox::to_array(Self) -> Array[String]
+pub fn GeoSearchByBox::to_array(Self) -> Array[String]
 
 pub(all) enum GeoUnits {
   Meters
@@ -58,344 +58,344 @@ pub(all) enum GeoUnits {
   Miles
   Feet
 }
-impl Show for GeoUnits
+pub impl Show for GeoUnits
 
 pub struct RedisClient {
-  conn : @socket.TCP
+  conn : @socket.Tcp
 }
-async fn RedisClient::append(Self, String, String) -> Result[Int, String]
-async fn RedisClient::auth(Self, String) -> Result[String, String]
-async fn RedisClient::auth_username(Self, String, String) -> Result[String, String]
-async fn RedisClient::bgrewriteaof(Self) -> RedisValue
-async fn RedisClient::bgsave(Self) -> RedisValue
-async fn RedisClient::bitcount(Self, String) -> Result[Int, String]
-async fn RedisClient::bitcount_range(Self, String, Int, Int) -> Result[Int, String]
-async fn RedisClient::bitfield(Self, String, Array[BitFieldOperation]) -> Result[Array[String], String]
-async fn RedisClient::bitfield_ro(Self, String, Array[String]) -> Result[Array[String], String]
-async fn RedisClient::bitop(Self, String, String, Array[String]) -> Result[Int, String]
-async fn RedisClient::bitpos(Self, String, Bit) -> Result[Int, String]
-async fn RedisClient::bitpos_range(Self, String, Bit, Int, Int) -> Result[Int, String]
-async fn RedisClient::blmove(Self, String, String, wherefrom~ : Int, whereto~ : Int, timeout~ : Int) -> RedisValue
-async fn RedisClient::blmpop(Self, timeout~ : Int, String, Array[String], where_~ : String) -> RedisValue
-async fn RedisClient::blpop(Self, Array[String], timeout~ : Int) -> RedisValue
-async fn RedisClient::brpop(Self, Array[String], timeout~ : Int) -> RedisValue
-async fn RedisClient::brpoplpush(Self, String, String, timeout~ : Int) -> RedisValue
-async fn RedisClient::bzmpop(Self, String, String, Array[String], String, String?) -> Result[Array[String], String]
-async fn RedisClient::bzpopmax(Self, Array[String], String) -> Result[String, String]
-async fn RedisClient::bzpopmin(Self, Array[String], String) -> Result[String, String]
-async fn RedisClient::client_caching(Self, String) -> Result[String, String]
-async fn RedisClient::client_getname(Self) -> Result[String?, String]
-async fn RedisClient::client_getredir(Self) -> Result[Int, String]
-async fn RedisClient::client_id(Self) -> Result[Int, String]
-async fn RedisClient::client_info(Self) -> Result[String, String]
-async fn RedisClient::client_kill(Self, String) -> Result[Int, String]
-async fn RedisClient::client_list(Self) -> Result[String, String]
-async fn RedisClient::client_no_evict(Self, String) -> Result[String, String]
-async fn RedisClient::client_no_touch(Self, String) -> Result[String, String]
-async fn RedisClient::client_pause(Self, String) -> Result[String, String]
-async fn RedisClient::client_reply(Self, String) -> Result[String, String]
-async fn RedisClient::client_setname(Self, String) -> Result[String, String]
-async fn RedisClient::client_tracking(Self, String) -> Result[String, String]
-async fn RedisClient::client_trackinginfo(Self) -> Result[Array[String], String]
-async fn RedisClient::client_unblock(Self, String) -> Result[Int, String]
-async fn RedisClient::client_unpause(Self) -> Result[String, String]
-fn RedisClient::close(Self) -> Unit
-async fn RedisClient::cluster_addslots(Self, Array[Int]) -> Result[String, String]
-async fn RedisClient::cluster_addslotsrange(Self, Array[(Int, Int)]) -> Result[String, String]
-async fn RedisClient::cluster_bumpepoch(Self) -> Result[String, String]
-async fn RedisClient::cluster_count_failure_reports(Self, String) -> Result[Int, String]
-async fn RedisClient::cluster_countkeysinslot(Self, Int) -> Result[Int, String]
-async fn RedisClient::cluster_delslots(Self, Array[Int]) -> Result[String, String]
-async fn RedisClient::cluster_delslotsrange(Self, Array[(Int, Int)]) -> Result[String, String]
-async fn RedisClient::cluster_failover(Self, option? : String) -> Result[String, String]
-async fn RedisClient::cluster_flushslots(Self) -> Result[String, String]
-async fn RedisClient::cluster_forget(Self, String) -> Result[String, String]
-async fn RedisClient::cluster_getkeysinslot(Self, Int, Int) -> Result[Array[String], String]
-async fn RedisClient::cluster_info(Self) -> Result[String, String]
-async fn RedisClient::cluster_keyslot(Self, String) -> Result[Int, String]
-async fn RedisClient::cluster_links(Self) -> Result[Array[String], String]
-async fn RedisClient::cluster_meet(Self, String, Int, cluster_bus_port? : Int) -> Result[String, String]
-async fn RedisClient::cluster_myid(Self) -> Result[String, String]
-async fn RedisClient::cluster_myshardid(Self) -> Result[String, String]
-async fn RedisClient::cluster_nodes(Self) -> Result[String, String]
-async fn RedisClient::cluster_replicas(Self, String) -> Result[Array[String], String]
-async fn RedisClient::cluster_replicate(Self, String) -> Result[String, String]
-async fn RedisClient::cluster_reset(Self, reset_type? : String) -> Result[String, String]
-async fn RedisClient::cluster_saveconfig(Self) -> Result[String, String]
-async fn RedisClient::cluster_set_config_epoch(Self, Int) -> Result[String, String]
-async fn RedisClient::cluster_setslot(Self, Int, String, node_id? : String) -> Result[String, String]
-async fn RedisClient::cluster_shards(Self) -> Result[Array[String], String]
-async fn RedisClient::cluster_slaves(Self, String) -> Result[Array[String], String]
-async fn RedisClient::cluster_slot_stats(Self, Array[Int]) -> Result[Array[String], String]
-async fn RedisClient::cluster_slots(Self) -> Result[Array[String], String]
-async fn RedisClient::command(Self) -> RedisValue
-async fn RedisClient::command_count(Self) -> RedisValue
-async fn RedisClient::command_docs(Self, Array[String]) -> RedisValue
-async fn RedisClient::command_getkeys(Self, Array[String]) -> RedisValue
-async fn RedisClient::command_getkeysandflags(Self, Array[String]) -> RedisValue
-async fn RedisClient::command_info(Self, Array[String]) -> RedisValue
-async fn RedisClient::command_list(Self) -> RedisValue
-async fn RedisClient::config_get(Self, String) -> RedisValue
-async fn RedisClient::config_resetstat(Self) -> RedisValue
-async fn RedisClient::config_rewrite(Self) -> RedisValue
-async fn RedisClient::config_set(Self, String, String) -> RedisValue
-async fn RedisClient::copy(Self, String, String) -> Result[Int, String]
-async fn RedisClient::dbsize(Self) -> Result[Int, String]
-async fn RedisClient::debug_object(Self, String) -> RedisValue
-async fn RedisClient::debug_segfault(Self) -> RedisValue
-async fn RedisClient::decr(Self, String) -> Result[Int, String]
-async fn RedisClient::decrby(Self, String, String) -> Result[Int, String]
-async fn RedisClient::del(Self, Array[String]) -> Result[Int, String]
-async fn RedisClient::dump(Self, String) -> Result[String?, String]
-async fn RedisClient::echo(Self, String) -> Result[String, String]
-async fn RedisClient::exists(Self, Array[String]) -> Result[Int, String]
-async fn RedisClient::expire(Self, String, String) -> Result[Int, String]
-async fn RedisClient::expireat(Self, String, String) -> Result[Int, String]
-async fn RedisClient::expiretime(Self, String) -> Result[Int, String]
-async fn RedisClient::flushall(Self) -> Result[String, String]
-async fn RedisClient::flushdb(Self) -> Result[String, String]
-async fn RedisClient::geoadd(Self, String, String, String, String) -> Result[Int, String]
-async fn RedisClient::geoadd_multiple(Self, String, Array[GeoCoordinates]) -> Result[Int, String]
-async fn RedisClient::geodist(Self, String, String, String) -> Result[String?, String]
-async fn RedisClient::geodist_unit(Self, String, String, String, GeoUnits) -> Result[String?, String]
-async fn RedisClient::geohash(Self, String, Array[String]) -> Result[Array[String], String]
-async fn RedisClient::geopos(Self, String, Array[String]) -> Result[Array[String], String]
-async fn RedisClient::georadius(Self, String, String, String, String, GeoUnits) -> Result[Array[String], String]
-async fn RedisClient::georadius_ro(Self, String, String, String, String, GeoUnits) -> Result[Array[String], String]
-async fn RedisClient::georadiusbymember(Self, String, String, String, GeoUnits) -> Result[Array[String], String]
-async fn RedisClient::georadiusbymember_ro(Self, String, String, String, GeoUnits) -> Result[Array[String], String]
-async fn RedisClient::geosearch(Self, String, String, String, GeoUnits) -> Result[Array[String], String]
-async fn RedisClient::geosearch_box(Self, String, GeoCoordinates, GeoSearchByBox) -> Result[Array[String], String]
-async fn RedisClient::geosearch_with_dist(Self, String, String, Double, GeoUnits) -> Result[Array[String], String]
-async fn RedisClient::geosearchstore(Self, String, String, String, String, GeoUnits) -> Result[Int, String]
-async fn RedisClient::geosearchstore_box(Self, String, String, String, GeoSearchByBox) -> Result[Int, String]
-async fn RedisClient::geosearchstore_with_dist(Self, String, String, String, Double, GeoUnits) -> Result[Int, String]
-async fn RedisClient::get(Self, String) -> Result[String, String]
-async fn RedisClient::getbit(Self, String, Int) -> Result[Int, String]
-async fn RedisClient::getdel(Self, String) -> Result[String, String]
-async fn RedisClient::getex(Self, String, String) -> Result[String, String]
-async fn RedisClient::getrange(Self, String, String, String) -> Result[String, String]
-async fn RedisClient::getset(Self, String, String) -> Result[String, String]
-async fn RedisClient::hdel(Self, String, Array[String]) -> Result[Int, String]
-async fn RedisClient::hello(Self, String) -> Result[Array[String], String]
-async fn RedisClient::hexists(Self, String, String) -> Result[Bool, String]
-async fn RedisClient::hget(Self, String, String) -> Result[String, String]
-async fn RedisClient::hgetall(Self, String) -> Result[Map[String, String], String]
-async fn RedisClient::hkeys(Self, String) -> Result[Array[String], String]
-async fn RedisClient::hlen(Self, String) -> Result[Int, String]
-async fn RedisClient::hset(Self, String, String, String) -> Result[Int, String]
-async fn RedisClient::hvals(Self, String) -> Result[Array[String], String]
-async fn RedisClient::incr(Self, String) -> Result[Int, String]
-async fn RedisClient::incrby(Self, String, String) -> Result[Int, String]
-async fn RedisClient::incrbyfloat(Self, String, String) -> Result[String, String]
-async fn RedisClient::info(Self) -> RedisValue
-async fn RedisClient::info_section(Self, String) -> RedisValue
-async fn RedisClient::json_arrappend(Self, String, String, Array[String]) -> Result[Int, String]
-async fn RedisClient::json_arrinsert(Self, String, String, Int, Array[String]) -> Result[Int, String]
-async fn RedisClient::json_arrlen(Self, String, String) -> Result[Int, String]
-async fn RedisClient::json_arrpop(Self, String, String, Int) -> Result[String, String]
-async fn RedisClient::json_arrtrim(Self, String, String, Int, Int) -> Result[Int, String]
-async fn RedisClient::json_clear(Self, String, String) -> Result[Int, String]
-async fn RedisClient::json_debug(Self, String, String, String) -> Result[String, String]
-async fn RedisClient::json_del(Self, String, String) -> Result[Int, String]
-async fn RedisClient::json_forget(Self, String, String) -> Result[Int, String]
-async fn RedisClient::json_get(Self, String, String) -> Result[String, String]
-async fn RedisClient::json_numincrby(Self, String, String, String) -> Result[String, String]
-async fn RedisClient::json_nummultby(Self, String, String, String) -> Result[String, String]
-async fn RedisClient::json_objkeys(Self, String, String) -> Result[Array[String], String]
-async fn RedisClient::json_objlen(Self, String, String) -> Result[Int, String]
-async fn RedisClient::json_resp(Self, String, String) -> Result[Array[String], String]
-async fn RedisClient::json_set(Self, String, String, String) -> Result[String, String]
-async fn RedisClient::json_strappend(Self, String, String, String) -> Result[Int, String]
-async fn RedisClient::json_strlen(Self, String, String) -> Result[Int, String]
-async fn RedisClient::json_toggle(Self, String, String) -> Result[Int, String]
-async fn RedisClient::json_type(Self, String, String) -> Result[String, String]
-async fn RedisClient::keys(Self, String) -> Result[Array[String], String]
-async fn RedisClient::lastsave(Self) -> RedisValue
-async fn RedisClient::latency_doctor(Self) -> RedisValue
-async fn RedisClient::latency_graph(Self, String) -> RedisValue
-async fn RedisClient::latency_history(Self, String) -> RedisValue
-async fn RedisClient::latency_latest(Self) -> RedisValue
-async fn RedisClient::latency_reset(Self, Array[String]) -> RedisValue
-async fn RedisClient::lindex(Self, String, index~ : Int) -> Result[String, String]
-async fn RedisClient::linsert(Self, String, where_~ : String, pivot~ : String, element~ : String) -> Result[Int, String]
-async fn RedisClient::llen(Self, String) -> Result[Int, String]
-async fn RedisClient::lmove(Self, String, String, wherefrom~ : Int, whereto~ : Int) -> RedisValue
-async fn RedisClient::lmpop(Self, String, Array[String], where_~ : String) -> RedisValue
-async fn RedisClient::lpop(Self, String) -> Result[String, String]
-async fn RedisClient::lpos(Self, String, element~ : String) -> RedisValue
-async fn RedisClient::lpush(Self, String, Array[String]) -> Result[Int, String]
-async fn RedisClient::lpushx(Self, String, Array[String]) -> Result[Int, String]
-async fn RedisClient::lrange(Self, String, start~ : Int, stop~ : Int) -> Result[Array[String], String]
-async fn RedisClient::lrem(Self, String, count~ : Int, value~ : String) -> Result[Int, String]
-async fn RedisClient::lset(Self, String, index~ : Int, value~ : String) -> Result[String, String]
-async fn RedisClient::ltrim(Self, String, start~ : Int, stop~ : Int) -> Result[String, String]
-async fn RedisClient::memory_doctor(Self) -> RedisValue
-async fn RedisClient::memory_malloc_stats(Self) -> RedisValue
-async fn RedisClient::memory_purge(Self) -> RedisValue
-async fn RedisClient::memory_stats(Self) -> RedisValue
-async fn RedisClient::memory_usage(Self, String) -> RedisValue
-async fn RedisClient::mget(Self, Array[String]) -> Result[Array[String], String]
-async fn RedisClient::migrate(Self, String, String, String, String, String) -> Result[String, String]
-async fn RedisClient::module_list(Self) -> RedisValue
-async fn RedisClient::module_load(Self, String) -> RedisValue
-async fn RedisClient::module_loadex(Self, String, Array[String]) -> RedisValue
-async fn RedisClient::module_unload(Self, String) -> RedisValue
-async fn RedisClient::monitor(Self) -> RedisValue
-async fn RedisClient::move_(Self, String, String) -> Result[Int, String]
-async fn RedisClient::mset(Self, Map[String, String]) -> Result[String, String]
-async fn RedisClient::msetnx(Self, Map[String, String]) -> Result[Int, String]
-async fn RedisClient::object_encoding(Self, String) -> Result[String?, String]
-async fn RedisClient::object_freq(Self, String) -> Result[Int, String]
-async fn RedisClient::object_idletime(Self, String) -> Result[Int, String]
-async fn RedisClient::object_refcount(Self, String) -> Result[Int, String]
-async fn RedisClient::persist(Self, String) -> Result[Int, String]
-async fn RedisClient::pexpire(Self, String, String) -> Result[Int, String]
-async fn RedisClient::pexpireat(Self, String, String) -> Result[Int, String]
-async fn RedisClient::pexpiretime(Self, String) -> Result[Int, String]
-async fn RedisClient::ping(Self) -> Result[String, String]
-async fn RedisClient::psetex(Self, String, String, String) -> Result[String, String]
-async fn RedisClient::psubscribe(Self, Array[String]) -> Result[Array[String], String]
-async fn RedisClient::psync(Self, String, String) -> RedisValue
-async fn RedisClient::pttl(Self, String) -> Result[Int, String]
-async fn RedisClient::publish(Self, String, String) -> Result[Int, String]
-async fn RedisClient::pubsub_channels(Self, pattern? : String) -> Result[Array[String], String]
-async fn RedisClient::pubsub_numpat(Self) -> Result[Int, String]
-async fn RedisClient::pubsub_numsub(Self, channels? : Array[String]) -> Result[Array[String], String]
-async fn RedisClient::pubsub_shardchannels(Self, pattern? : String) -> Result[Array[String], String]
-async fn RedisClient::pubsub_shardnumsub(Self, channels? : Array[String]) -> Result[Array[String], String]
-async fn RedisClient::punsubscribe(Self, patterns? : Array[String]) -> Result[Array[String], String]
-async fn RedisClient::quit(Self) -> Result[String, String]
-async fn RedisClient::randomkey(Self) -> Result[String?, String]
-async fn RedisClient::read(Self, FixedArray[Byte]) -> Int
-async fn RedisClient::read_redis_value(Self) -> RedisValue
-async fn RedisClient::read_response(Self) -> String
-async fn RedisClient::rename(Self, String, String) -> Result[String, String]
-async fn RedisClient::renamenx(Self, String, String) -> Result[Int, String]
-async fn RedisClient::replconf(Self, String, String) -> RedisValue
-async fn RedisClient::replicaof(Self, String, String) -> RedisValue
-async fn RedisClient::reset(Self) -> Result[String, String]
-async fn RedisClient::restore(Self, String, String, String) -> Result[String, String]
-async fn RedisClient::role(Self) -> RedisValue
-async fn RedisClient::rpop(Self, String) -> Result[String, String]
-async fn RedisClient::rpoplpush(Self, String, String) -> RedisValue
-async fn RedisClient::rpush(Self, String, Array[String]) -> Result[Int, String]
-async fn RedisClient::rpushx(Self, String, Array[String]) -> Result[Int, String]
-async fn RedisClient::sadd(Self, String, Array[String]) -> Result[Int, String]
-async fn RedisClient::save(Self) -> RedisValue
-async fn RedisClient::scan(Self, String) -> Result[Array[String], String]
-async fn RedisClient::scard(Self, String) -> Result[Int, String]
-async fn RedisClient::sdiff(Self, Array[String]) -> Result[Array[String], String]
-async fn RedisClient::sdiffstore(Self, String, Array[String]) -> Result[Int, String]
-async fn RedisClient::select(Self, String) -> Result[String, String]
-async fn RedisClient::send(Self, Array[String]) -> RedisValue
-async fn RedisClient::set(Self, String, String, condition? : SetCondition, get? : Bool, expiration? : SetExpiration) -> Result[String, String]
-async fn RedisClient::setbit(Self, String, Int, Bit) -> Result[Int, String]
-async fn RedisClient::setex(Self, String, String, String) -> Result[String, String]
-async fn RedisClient::setnx(Self, String, String) -> Result[Int, String]
-async fn RedisClient::setrange(Self, String, String, String) -> Result[Int, String]
-async fn RedisClient::shutdown(Self) -> RedisValue
-async fn RedisClient::sinter(Self, Array[String]) -> Result[Int, String]
-async fn RedisClient::sintercard(Self, String, Array[String]) -> Result[Int, String]
-async fn RedisClient::sinterstore(Self, String, Array[String]) -> Result[Int, String]
-async fn RedisClient::sismember(Self, String, String) -> Result[Int, String]
-async fn RedisClient::slaveof(Self, String, String) -> RedisValue
-async fn RedisClient::slowlog_get(Self) -> RedisValue
-async fn RedisClient::slowlog_len(Self) -> RedisValue
-async fn RedisClient::slowlog_reset(Self) -> RedisValue
-async fn RedisClient::smembers(Self, String) -> Result[Array[String], String]
-async fn RedisClient::smismember(Self, String, Array[String]) -> Result[Array[String], String]
-async fn RedisClient::smove(Self, String, String, String) -> Result[Int, String]
-async fn RedisClient::sort(Self, String) -> Result[Array[String], String]
-async fn RedisClient::sort_ro(Self, String) -> Result[Array[String], String]
-async fn RedisClient::spop(Self, String) -> Result[String, String]
-async fn RedisClient::spublish(Self, String, String) -> Result[Int, String]
-async fn RedisClient::srandmember(Self, String) -> Result[String, String]
-async fn RedisClient::srem(Self, String, Array[String]) -> Result[Int, String]
-async fn RedisClient::sscan(Self, String, Int, match_pattern? : String, count? : Int) -> Result[Array[String], String]
-async fn RedisClient::ssubscribe(Self, Array[String]) -> Result[Array[String], String]
-async fn RedisClient::strlen(Self, String) -> Result[Int, String]
-async fn RedisClient::subscribe(Self, Array[String]) -> Result[Array[String], String]
-async fn RedisClient::substr(Self, String, Int, Int) -> Result[String, String]
-async fn RedisClient::sunion(Self, Array[String]) -> Result[Int, String]
-async fn RedisClient::sunionstore(Self, String, Array[String]) -> Result[Int, String]
-async fn RedisClient::sunsubscribe(Self, channels? : Array[String]) -> Result[Array[String], String]
-async fn RedisClient::swapdb(Self, String, String) -> Result[String, String]
-async fn RedisClient::sync(Self) -> RedisValue
-async fn RedisClient::time(Self) -> RedisValue
-async fn RedisClient::touch(Self, Array[String]) -> Result[Int, String]
-async fn RedisClient::ttl(Self, String) -> Result[Int, String]
-async fn RedisClient::type_(Self, String) -> Result[String, String]
-async fn RedisClient::unlink(Self, Array[String]) -> Result[Int, String]
-async fn RedisClient::unsubscribe(Self, channels? : Array[String]) -> Result[Array[String], String]
-async fn RedisClient::wait(Self, String, String) -> Result[Int, String]
-async fn RedisClient::waitaof(Self, String, String, String) -> Result[Int, String]
-async fn RedisClient::write(Self, String) -> Unit
-async fn RedisClient::xack(Self, String, String, Array[String]) -> Result[Int, String]
-async fn RedisClient::xadd(Self, String, String, Map[String, String]) -> Result[String, String]
-async fn RedisClient::xautoclaim(Self, String, String, String, Int, start~ : String, count? : Int) -> Result[Array[String], String]
-async fn RedisClient::xclaim(Self, String, String, String, Int, Array[String]) -> Result[Array[String], String]
-async fn RedisClient::xdel(Self, String, Array[String]) -> Result[Int, String]
-async fn RedisClient::xgroup_create(Self, String, String, String, Bool) -> Result[String, String]
-async fn RedisClient::xgroup_createconsumer(Self, String, String, String) -> Result[Int, String]
-async fn RedisClient::xgroup_delconsumer(Self, String, String, String) -> Result[Int, String]
-async fn RedisClient::xgroup_destroy(Self, String, String) -> Result[Int, String]
-async fn RedisClient::xgroup_setid(Self, String, String, String) -> Result[String, String]
-async fn RedisClient::xinfo_consumers(Self, String, String) -> Result[Array[String], String]
-async fn RedisClient::xinfo_groups(Self, String) -> Result[Array[String], String]
-async fn RedisClient::xinfo_stream(Self, String) -> Result[Array[String], String]
-async fn RedisClient::xlen(Self, String) -> Result[Int, String]
-async fn RedisClient::xpending(Self, String, String) -> Result[Array[String], String]
-async fn RedisClient::xpending_range(Self, String, String, start~ : String, end~ : String, count~ : Int, consumer? : String) -> Result[Array[String], String]
-async fn RedisClient::xrange(Self, String, start~ : String, end~ : String, count? : Int) -> Result[Array[RedisStreamMessage], String]
-async fn RedisClient::xread(Self, count? : Int, block? : Int, Array[(String, String)]) -> Result[RedisStream, String]
-async fn RedisClient::xreadgroup(Self, String, String, count? : Int, block? : Int, noack? : Bool, Array[(String, String)]) -> Result[RedisStream, String]
-async fn RedisClient::xrevrange(Self, String, end~ : String, start~ : String, count? : Int) -> Result[Array[RedisStreamMessage], String]
-async fn RedisClient::xtrim(Self, String, strategy~ : XTrimStrategy, threshold~ : Int64, approximate? : Bool, limit? : Int, keepref? : Bool, delref? : Bool, acked? : Bool) -> Result[Int, String]
-async fn RedisClient::zadd(Self, String, Array[ZAddMember]) -> Result[Int, String]
-async fn RedisClient::zcard(Self, String) -> Result[Int, String]
-async fn RedisClient::zcount(Self, String, min~ : String, max~ : String) -> Result[Int, String]
-async fn RedisClient::zdiff(Self, String, Array[String]) -> Result[Array[String], String]
-async fn RedisClient::zdiffstore(Self, String, String, Array[String]) -> Result[Int, String]
-async fn RedisClient::zincrby(Self, String, increment~ : String, value~ : String) -> Result[String, String]
-async fn RedisClient::zinter(Self, String, Array[String]) -> Result[Array[String], String]
-async fn RedisClient::zintercard(Self, String, Array[String]) -> Result[Int, String]
-async fn RedisClient::zinterstore(Self, String, String, Array[String]) -> Result[Int, String]
-async fn RedisClient::zlexcount(Self, String, min~ : String, max~ : String) -> Result[Int, String]
-async fn RedisClient::zmpop(Self, String, Array[String], String) -> Result[Array[String], String]
-async fn RedisClient::zmscore(Self, String, Array[String]) -> Result[Array[String], String]
-async fn RedisClient::zpopmax(Self, String) -> Result[String, String]
-async fn RedisClient::zpopmin(Self, String) -> Result[String, String]
-async fn RedisClient::zrandmember(Self, String) -> Result[String, String]
-async fn RedisClient::zrange(Self, String, start~ : String, stop~ : String) -> Result[Array[String], String]
-async fn RedisClient::zrangebylex(Self, String, min~ : String, max~ : String) -> Result[Array[String], String]
-async fn RedisClient::zrangebyscore(Self, String, min~ : String, max~ : String) -> Result[Array[String], String]
-async fn RedisClient::zrangestore(Self, String, String, min~ : String, max~ : String) -> Result[Int, String]
-async fn RedisClient::zrank(Self, String, String) -> Result[Int, String]
-async fn RedisClient::zrem(Self, String, Array[String]) -> Result[Int, String]
-async fn RedisClient::zremrangebylex(Self, String, String, String) -> Result[Int, String]
-async fn RedisClient::zremrangebyrank(Self, String, String, String) -> Result[Int, String]
-async fn RedisClient::zremrangebyscore(Self, String, String, String) -> Result[Int, String]
-async fn RedisClient::zrevrange(Self, String, start~ : String, stop~ : String) -> Result[Array[String], String]
-async fn RedisClient::zrevrangebylex(Self, String, max~ : String, min~ : String) -> Result[Array[String], String]
-async fn RedisClient::zrevrangebyscore(Self, String, max~ : String, min~ : String) -> Result[Array[String], String]
-async fn RedisClient::zrevrank(Self, String, String) -> Result[Int, String]
-async fn RedisClient::zscan(Self, String, String) -> Result[Array[String], String]
-async fn RedisClient::zscore(Self, String, String) -> Result[String, String]
-async fn RedisClient::zunion(Self, String, Array[String]) -> Result[Array[String], String]
-async fn RedisClient::zunionstore(Self, String, String, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::append(Self, String, String) -> Result[Int, String]
+pub async fn RedisClient::auth(Self, String) -> Result[String, String]
+pub async fn RedisClient::auth_username(Self, String, String) -> Result[String, String]
+pub async fn RedisClient::bgrewriteaof(Self) -> RedisValue
+pub async fn RedisClient::bgsave(Self) -> RedisValue
+pub async fn RedisClient::bitcount(Self, String) -> Result[Int, String]
+pub async fn RedisClient::bitcount_range(Self, String, Int, Int) -> Result[Int, String]
+pub async fn RedisClient::bitfield(Self, String, Array[BitFieldOperation]) -> Result[Array[String], String]
+pub async fn RedisClient::bitfield_ro(Self, String, Array[String]) -> Result[Array[String], String]
+pub async fn RedisClient::bitop(Self, String, String, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::bitpos(Self, String, Bit) -> Result[Int, String]
+pub async fn RedisClient::bitpos_range(Self, String, Bit, Int, Int) -> Result[Int, String]
+pub async fn RedisClient::blmove(Self, String, String, wherefrom~ : Int, whereto~ : Int, timeout~ : Int) -> RedisValue
+pub async fn RedisClient::blmpop(Self, timeout~ : Int, String, Array[String], where_~ : String) -> RedisValue
+pub async fn RedisClient::blpop(Self, Array[String], timeout~ : Int) -> RedisValue
+pub async fn RedisClient::brpop(Self, Array[String], timeout~ : Int) -> RedisValue
+pub async fn RedisClient::brpoplpush(Self, String, String, timeout~ : Int) -> RedisValue
+pub async fn RedisClient::bzmpop(Self, String, String, Array[String], String, String?) -> Result[Array[String], String]
+pub async fn RedisClient::bzpopmax(Self, Array[String], String) -> Result[String, String]
+pub async fn RedisClient::bzpopmin(Self, Array[String], String) -> Result[String, String]
+pub async fn RedisClient::client_caching(Self, String) -> Result[String, String]
+pub async fn RedisClient::client_getname(Self) -> Result[String?, String]
+pub async fn RedisClient::client_getredir(Self) -> Result[Int, String]
+pub async fn RedisClient::client_id(Self) -> Result[Int, String]
+pub async fn RedisClient::client_info(Self) -> Result[String, String]
+pub async fn RedisClient::client_kill(Self, String) -> Result[Int, String]
+pub async fn RedisClient::client_list(Self) -> Result[String, String]
+pub async fn RedisClient::client_no_evict(Self, String) -> Result[String, String]
+pub async fn RedisClient::client_no_touch(Self, String) -> Result[String, String]
+pub async fn RedisClient::client_pause(Self, String) -> Result[String, String]
+pub async fn RedisClient::client_reply(Self, String) -> Result[String, String]
+pub async fn RedisClient::client_setname(Self, String) -> Result[String, String]
+pub async fn RedisClient::client_tracking(Self, String) -> Result[String, String]
+pub async fn RedisClient::client_trackinginfo(Self) -> Result[Array[String], String]
+pub async fn RedisClient::client_unblock(Self, String) -> Result[Int, String]
+pub async fn RedisClient::client_unpause(Self) -> Result[String, String]
+pub fn RedisClient::close(Self) -> Unit
+pub async fn RedisClient::cluster_addslots(Self, Array[Int]) -> Result[String, String]
+pub async fn RedisClient::cluster_addslotsrange(Self, Array[(Int, Int)]) -> Result[String, String]
+pub async fn RedisClient::cluster_bumpepoch(Self) -> Result[String, String]
+pub async fn RedisClient::cluster_count_failure_reports(Self, String) -> Result[Int, String]
+pub async fn RedisClient::cluster_countkeysinslot(Self, Int) -> Result[Int, String]
+pub async fn RedisClient::cluster_delslots(Self, Array[Int]) -> Result[String, String]
+pub async fn RedisClient::cluster_delslotsrange(Self, Array[(Int, Int)]) -> Result[String, String]
+pub async fn RedisClient::cluster_failover(Self, option? : String) -> Result[String, String]
+pub async fn RedisClient::cluster_flushslots(Self) -> Result[String, String]
+pub async fn RedisClient::cluster_forget(Self, String) -> Result[String, String]
+pub async fn RedisClient::cluster_getkeysinslot(Self, Int, Int) -> Result[Array[String], String]
+pub async fn RedisClient::cluster_info(Self) -> Result[String, String]
+pub async fn RedisClient::cluster_keyslot(Self, String) -> Result[Int, String]
+pub async fn RedisClient::cluster_links(Self) -> Result[Array[String], String]
+pub async fn RedisClient::cluster_meet(Self, String, Int, cluster_bus_port? : Int) -> Result[String, String]
+pub async fn RedisClient::cluster_myid(Self) -> Result[String, String]
+pub async fn RedisClient::cluster_myshardid(Self) -> Result[String, String]
+pub async fn RedisClient::cluster_nodes(Self) -> Result[String, String]
+pub async fn RedisClient::cluster_replicas(Self, String) -> Result[Array[String], String]
+pub async fn RedisClient::cluster_replicate(Self, String) -> Result[String, String]
+pub async fn RedisClient::cluster_reset(Self, reset_type? : String) -> Result[String, String]
+pub async fn RedisClient::cluster_saveconfig(Self) -> Result[String, String]
+pub async fn RedisClient::cluster_set_config_epoch(Self, Int) -> Result[String, String]
+pub async fn RedisClient::cluster_setslot(Self, Int, String, node_id? : String) -> Result[String, String]
+pub async fn RedisClient::cluster_shards(Self) -> Result[Array[String], String]
+pub async fn RedisClient::cluster_slaves(Self, String) -> Result[Array[String], String]
+pub async fn RedisClient::cluster_slot_stats(Self, Array[Int]) -> Result[Array[String], String]
+pub async fn RedisClient::cluster_slots(Self) -> Result[Array[String], String]
+pub async fn RedisClient::command(Self) -> RedisValue
+pub async fn RedisClient::command_count(Self) -> RedisValue
+pub async fn RedisClient::command_docs(Self, Array[String]) -> RedisValue
+pub async fn RedisClient::command_getkeys(Self, Array[String]) -> RedisValue
+pub async fn RedisClient::command_getkeysandflags(Self, Array[String]) -> RedisValue
+pub async fn RedisClient::command_info(Self, Array[String]) -> RedisValue
+pub async fn RedisClient::command_list(Self) -> RedisValue
+pub async fn RedisClient::config_get(Self, String) -> RedisValue
+pub async fn RedisClient::config_resetstat(Self) -> RedisValue
+pub async fn RedisClient::config_rewrite(Self) -> RedisValue
+pub async fn RedisClient::config_set(Self, String, String) -> RedisValue
+pub async fn RedisClient::copy(Self, String, String) -> Result[Int, String]
+pub async fn RedisClient::dbsize(Self) -> Result[Int, String]
+pub async fn RedisClient::debug_object(Self, String) -> RedisValue
+pub async fn RedisClient::debug_segfault(Self) -> RedisValue
+pub async fn RedisClient::decr(Self, String) -> Result[Int, String]
+pub async fn RedisClient::decrby(Self, String, String) -> Result[Int, String]
+pub async fn RedisClient::del(Self, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::dump(Self, String) -> Result[String?, String]
+pub async fn RedisClient::echo(Self, String) -> Result[String, String]
+pub async fn RedisClient::exists(Self, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::expire(Self, String, String) -> Result[Int, String]
+pub async fn RedisClient::expireat(Self, String, String) -> Result[Int, String]
+pub async fn RedisClient::expiretime(Self, String) -> Result[Int, String]
+pub async fn RedisClient::flushall(Self) -> Result[String, String]
+pub async fn RedisClient::flushdb(Self) -> Result[String, String]
+pub async fn RedisClient::geoadd(Self, String, String, String, String) -> Result[Int, String]
+pub async fn RedisClient::geoadd_multiple(Self, String, Array[GeoCoordinates]) -> Result[Int, String]
+pub async fn RedisClient::geodist(Self, String, String, String) -> Result[String?, String]
+pub async fn RedisClient::geodist_unit(Self, String, String, String, GeoUnits) -> Result[String?, String]
+pub async fn RedisClient::geohash(Self, String, Array[String]) -> Result[Array[String], String]
+pub async fn RedisClient::geopos(Self, String, Array[String]) -> Result[Array[String], String]
+pub async fn RedisClient::georadius(Self, String, String, String, String, GeoUnits) -> Result[Array[String], String]
+pub async fn RedisClient::georadius_ro(Self, String, String, String, String, GeoUnits) -> Result[Array[String], String]
+pub async fn RedisClient::georadiusbymember(Self, String, String, String, GeoUnits) -> Result[Array[String], String]
+pub async fn RedisClient::georadiusbymember_ro(Self, String, String, String, GeoUnits) -> Result[Array[String], String]
+pub async fn RedisClient::geosearch(Self, String, String, String, GeoUnits) -> Result[Array[String], String]
+pub async fn RedisClient::geosearch_box(Self, String, GeoCoordinates, GeoSearchByBox) -> Result[Array[String], String]
+pub async fn RedisClient::geosearch_with_dist(Self, String, String, Double, GeoUnits) -> Result[Array[String], String]
+pub async fn RedisClient::geosearchstore(Self, String, String, String, String, GeoUnits) -> Result[Int, String]
+pub async fn RedisClient::geosearchstore_box(Self, String, String, String, GeoSearchByBox) -> Result[Int, String]
+pub async fn RedisClient::geosearchstore_with_dist(Self, String, String, String, Double, GeoUnits) -> Result[Int, String]
+pub async fn RedisClient::get(Self, String) -> Result[String, String]
+pub async fn RedisClient::getbit(Self, String, Int) -> Result[Int, String]
+pub async fn RedisClient::getdel(Self, String) -> Result[String, String]
+pub async fn RedisClient::getex(Self, String, String) -> Result[String, String]
+pub async fn RedisClient::getrange(Self, String, String, String) -> Result[String, String]
+pub async fn RedisClient::getset(Self, String, String) -> Result[String, String]
+pub async fn RedisClient::hdel(Self, String, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::hello(Self, String) -> Result[Array[String], String]
+pub async fn RedisClient::hexists(Self, String, String) -> Result[Bool, String]
+pub async fn RedisClient::hget(Self, String, String) -> Result[String, String]
+pub async fn RedisClient::hgetall(Self, String) -> Result[Map[String, String], String]
+pub async fn RedisClient::hkeys(Self, String) -> Result[Array[String], String]
+pub async fn RedisClient::hlen(Self, String) -> Result[Int, String]
+pub async fn RedisClient::hset(Self, String, String, String) -> Result[Int, String]
+pub async fn RedisClient::hvals(Self, String) -> Result[Array[String], String]
+pub async fn RedisClient::incr(Self, String) -> Result[Int, String]
+pub async fn RedisClient::incrby(Self, String, String) -> Result[Int, String]
+pub async fn RedisClient::incrbyfloat(Self, String, String) -> Result[String, String]
+pub async fn RedisClient::info(Self) -> RedisValue
+pub async fn RedisClient::info_section(Self, String) -> RedisValue
+pub async fn RedisClient::json_arrappend(Self, String, String, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::json_arrinsert(Self, String, String, Int, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::json_arrlen(Self, String, String) -> Result[Int, String]
+pub async fn RedisClient::json_arrpop(Self, String, String, Int) -> Result[String, String]
+pub async fn RedisClient::json_arrtrim(Self, String, String, Int, Int) -> Result[Int, String]
+pub async fn RedisClient::json_clear(Self, String, String) -> Result[Int, String]
+pub async fn RedisClient::json_debug(Self, String, String, String) -> Result[String, String]
+pub async fn RedisClient::json_del(Self, String, String) -> Result[Int, String]
+pub async fn RedisClient::json_forget(Self, String, String) -> Result[Int, String]
+pub async fn RedisClient::json_get(Self, String, String) -> Result[Json, String]
+pub async fn RedisClient::json_numincrby(Self, String, String, String) -> Result[String, String]
+pub async fn RedisClient::json_nummultby(Self, String, String, String) -> Result[String, String]
+pub async fn RedisClient::json_objkeys(Self, String, String) -> Result[Array[String], String]
+pub async fn RedisClient::json_objlen(Self, String, String) -> Result[Int, String]
+pub async fn RedisClient::json_resp(Self, String, String) -> Result[Array[String], String]
+pub async fn RedisClient::json_set(Self, String, String, String) -> Result[Json, String]
+pub async fn RedisClient::json_strappend(Self, String, String, String) -> Result[Int, String]
+pub async fn RedisClient::json_strlen(Self, String, String) -> Result[Int, String]
+pub async fn RedisClient::json_toggle(Self, String, String) -> Result[Int, String]
+pub async fn RedisClient::json_type(Self, String, String) -> Result[String, String]
+pub async fn RedisClient::keys(Self, String) -> Result[Array[String], String]
+pub async fn RedisClient::lastsave(Self) -> RedisValue
+pub async fn RedisClient::latency_doctor(Self) -> RedisValue
+pub async fn RedisClient::latency_graph(Self, String) -> RedisValue
+pub async fn RedisClient::latency_history(Self, String) -> RedisValue
+pub async fn RedisClient::latency_latest(Self) -> RedisValue
+pub async fn RedisClient::latency_reset(Self, Array[String]) -> RedisValue
+pub async fn RedisClient::lindex(Self, String, index~ : Int) -> Result[String, String]
+pub async fn RedisClient::linsert(Self, String, where_~ : String, pivot~ : String, element~ : String) -> Result[Int, String]
+pub async fn RedisClient::llen(Self, String) -> Result[Int, String]
+pub async fn RedisClient::lmove(Self, String, String, wherefrom~ : Int, whereto~ : Int) -> RedisValue
+pub async fn RedisClient::lmpop(Self, String, Array[String], where_~ : String) -> RedisValue
+pub async fn RedisClient::lpop(Self, String) -> Result[String, String]
+pub async fn RedisClient::lpos(Self, String, element~ : String) -> RedisValue
+pub async fn RedisClient::lpush(Self, String, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::lpushx(Self, String, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::lrange(Self, String, start~ : Int, stop~ : Int) -> Result[Array[String], String]
+pub async fn RedisClient::lrem(Self, String, count~ : Int, value~ : String) -> Result[Int, String]
+pub async fn RedisClient::lset(Self, String, index~ : Int, value~ : String) -> Result[String, String]
+pub async fn RedisClient::ltrim(Self, String, start~ : Int, stop~ : Int) -> Result[String, String]
+pub async fn RedisClient::memory_doctor(Self) -> RedisValue
+pub async fn RedisClient::memory_malloc_stats(Self) -> RedisValue
+pub async fn RedisClient::memory_purge(Self) -> RedisValue
+pub async fn RedisClient::memory_stats(Self) -> RedisValue
+pub async fn RedisClient::memory_usage(Self, String) -> RedisValue
+pub async fn RedisClient::mget(Self, Array[String]) -> Result[Array[String], String]
+pub async fn RedisClient::migrate(Self, String, String, String, String, String) -> Result[String, String]
+pub async fn RedisClient::module_list(Self) -> RedisValue
+pub async fn RedisClient::module_load(Self, String) -> RedisValue
+pub async fn RedisClient::module_loadex(Self, String, Array[String]) -> RedisValue
+pub async fn RedisClient::module_unload(Self, String) -> RedisValue
+pub async fn RedisClient::monitor(Self) -> RedisValue
+pub async fn RedisClient::move_(Self, String, String) -> Result[Int, String]
+pub async fn RedisClient::mset(Self, Map[String, String]) -> Result[String, String]
+pub async fn RedisClient::msetnx(Self, Map[String, String]) -> Result[Int, String]
+pub async fn RedisClient::object_encoding(Self, String) -> Result[String?, String]
+pub async fn RedisClient::object_freq(Self, String) -> Result[Int, String]
+pub async fn RedisClient::object_idletime(Self, String) -> Result[Int, String]
+pub async fn RedisClient::object_refcount(Self, String) -> Result[Int, String]
+pub async fn RedisClient::persist(Self, String) -> Result[Int, String]
+pub async fn RedisClient::pexpire(Self, String, String) -> Result[Int, String]
+pub async fn RedisClient::pexpireat(Self, String, String) -> Result[Int, String]
+pub async fn RedisClient::pexpiretime(Self, String) -> Result[Int, String]
+pub async fn RedisClient::ping(Self) -> Result[String, String]
+pub async fn RedisClient::psetex(Self, String, String, String) -> Result[String, String]
+pub async fn RedisClient::psubscribe(Self, Array[String]) -> Result[Array[String], String]
+pub async fn RedisClient::psync(Self, String, String) -> RedisValue
+pub async fn RedisClient::pttl(Self, String) -> Result[Int, String]
+pub async fn RedisClient::publish(Self, String, String) -> Result[Int, String]
+pub async fn RedisClient::pubsub_channels(Self, pattern? : String) -> Result[Array[String], String]
+pub async fn RedisClient::pubsub_numpat(Self) -> Result[Int, String]
+pub async fn RedisClient::pubsub_numsub(Self, channels? : Array[String]) -> Result[Array[String], String]
+pub async fn RedisClient::pubsub_shardchannels(Self, pattern? : String) -> Result[Array[String], String]
+pub async fn RedisClient::pubsub_shardnumsub(Self, channels? : Array[String]) -> Result[Array[String], String]
+pub async fn RedisClient::punsubscribe(Self, patterns? : Array[String]) -> Result[Array[String], String]
+pub async fn RedisClient::quit(Self) -> Result[String, String]
+pub async fn RedisClient::randomkey(Self) -> Result[String?, String]
+pub async fn RedisClient::read(Self, FixedArray[Byte]) -> Int
+pub async fn RedisClient::read_redis_value(Self) -> RedisValue
+pub async fn RedisClient::read_response(Self) -> String
+pub async fn RedisClient::rename(Self, String, String) -> Result[String, String]
+pub async fn RedisClient::renamenx(Self, String, String) -> Result[Int, String]
+pub async fn RedisClient::replconf(Self, String, String) -> RedisValue
+pub async fn RedisClient::replicaof(Self, String, String) -> RedisValue
+pub async fn RedisClient::reset(Self) -> Result[String, String]
+pub async fn RedisClient::restore(Self, String, String, String) -> Result[String, String]
+pub async fn RedisClient::role(Self) -> RedisValue
+pub async fn RedisClient::rpop(Self, String) -> Result[String, String]
+pub async fn RedisClient::rpoplpush(Self, String, String) -> RedisValue
+pub async fn RedisClient::rpush(Self, String, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::rpushx(Self, String, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::sadd(Self, String, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::save(Self) -> RedisValue
+pub async fn RedisClient::scan(Self, String) -> Result[Array[String], String]
+pub async fn RedisClient::scard(Self, String) -> Result[Int, String]
+pub async fn RedisClient::sdiff(Self, Array[String]) -> Result[Array[String], String]
+pub async fn RedisClient::sdiffstore(Self, String, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::select(Self, String) -> Result[String, String]
+pub async fn RedisClient::send(Self, Array[String]) -> RedisValue
+pub async fn RedisClient::set(Self, String, String, condition? : SetCondition, get? : Bool, expiration? : SetExpiration) -> Result[String, String]
+pub async fn RedisClient::setbit(Self, String, Int, Bit) -> Result[Int, String]
+pub async fn RedisClient::setex(Self, String, String, String) -> Result[String, String]
+pub async fn RedisClient::setnx(Self, String, String) -> Result[Int, String]
+pub async fn RedisClient::setrange(Self, String, String, String) -> Result[Int, String]
+pub async fn RedisClient::shutdown(Self) -> RedisValue
+pub async fn RedisClient::sinter(Self, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::sintercard(Self, String, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::sinterstore(Self, String, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::sismember(Self, String, String) -> Result[Int, String]
+pub async fn RedisClient::slaveof(Self, String, String) -> RedisValue
+pub async fn RedisClient::slowlog_get(Self) -> RedisValue
+pub async fn RedisClient::slowlog_len(Self) -> RedisValue
+pub async fn RedisClient::slowlog_reset(Self) -> RedisValue
+pub async fn RedisClient::smembers(Self, String) -> Result[Array[String], String]
+pub async fn RedisClient::smismember(Self, String, Array[String]) -> Result[Array[String], String]
+pub async fn RedisClient::smove(Self, String, String, String) -> Result[Int, String]
+pub async fn RedisClient::sort(Self, String) -> Result[Array[String], String]
+pub async fn RedisClient::sort_ro(Self, String) -> Result[Array[String], String]
+pub async fn RedisClient::spop(Self, String) -> Result[String, String]
+pub async fn RedisClient::spublish(Self, String, String) -> Result[Int, String]
+pub async fn RedisClient::srandmember(Self, String) -> Result[String, String]
+pub async fn RedisClient::srem(Self, String, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::sscan(Self, String, Int, match_pattern? : String, count? : Int) -> Result[Array[String], String]
+pub async fn RedisClient::ssubscribe(Self, Array[String]) -> Result[Array[String], String]
+pub async fn RedisClient::strlen(Self, String) -> Result[Int, String]
+pub async fn RedisClient::subscribe(Self, Array[String]) -> Result[Array[String], String]
+pub async fn RedisClient::substr(Self, String, Int, Int) -> Result[String, String]
+pub async fn RedisClient::sunion(Self, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::sunionstore(Self, String, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::sunsubscribe(Self, channels? : Array[String]) -> Result[Array[String], String]
+pub async fn RedisClient::swapdb(Self, String, String) -> Result[String, String]
+pub async fn RedisClient::sync(Self) -> RedisValue
+pub async fn RedisClient::time(Self) -> RedisValue
+pub async fn RedisClient::touch(Self, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::ttl(Self, String) -> Result[Int, String]
+pub async fn RedisClient::type_(Self, String) -> Result[String, String]
+pub async fn RedisClient::unlink(Self, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::unsubscribe(Self, channels? : Array[String]) -> Result[Array[String], String]
+pub async fn RedisClient::wait(Self, String, String) -> Result[Int, String]
+pub async fn RedisClient::waitaof(Self, String, String, String) -> Result[Int, String]
+pub async fn RedisClient::write(Self, String) -> Unit
+pub async fn RedisClient::xack(Self, String, String, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::xadd(Self, String, String, Map[String, String]) -> Result[String, String]
+pub async fn RedisClient::xautoclaim(Self, String, String, String, Int, start~ : String, count? : Int) -> Result[Array[String], String]
+pub async fn RedisClient::xclaim(Self, String, String, String, Int, Array[String]) -> Result[Array[String], String]
+pub async fn RedisClient::xdel(Self, String, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::xgroup_create(Self, String, String, String, Bool) -> Result[String, String]
+pub async fn RedisClient::xgroup_createconsumer(Self, String, String, String) -> Result[Int, String]
+pub async fn RedisClient::xgroup_delconsumer(Self, String, String, String) -> Result[Int, String]
+pub async fn RedisClient::xgroup_destroy(Self, String, String) -> Result[Int, String]
+pub async fn RedisClient::xgroup_setid(Self, String, String, String) -> Result[String, String]
+pub async fn RedisClient::xinfo_consumers(Self, String, String) -> Result[Array[String], String]
+pub async fn RedisClient::xinfo_groups(Self, String) -> Result[Array[String], String]
+pub async fn RedisClient::xinfo_stream(Self, String) -> Result[Array[String], String]
+pub async fn RedisClient::xlen(Self, String) -> Result[Int, String]
+pub async fn RedisClient::xpending(Self, String, String) -> Result[Array[String], String]
+pub async fn RedisClient::xpending_range(Self, String, String, start~ : String, end~ : String, count~ : Int, consumer? : String) -> Result[Array[String], String]
+pub async fn RedisClient::xrange(Self, String, start~ : String, end~ : String, count? : Int) -> Result[Array[RedisStreamMessage], String]
+pub async fn RedisClient::xread(Self, count? : Int, block? : Int, Array[(String, String)]) -> Result[RedisStream, String]
+pub async fn RedisClient::xreadgroup(Self, String, String, count? : Int, block? : Int, noack? : Bool, Array[(String, String)]) -> Result[RedisStream, String]
+pub async fn RedisClient::xrevrange(Self, String, end~ : String, start~ : String, count? : Int) -> Result[Array[RedisStreamMessage], String]
+pub async fn RedisClient::xtrim(Self, String, strategy~ : XTrimStrategy, threshold~ : Int64, approximate? : Bool, limit? : Int, keepref? : Bool, delref? : Bool, acked? : Bool) -> Result[Int, String]
+pub async fn RedisClient::zadd(Self, String, Array[ZAddMember]) -> Result[Int, String]
+pub async fn RedisClient::zcard(Self, String) -> Result[Int, String]
+pub async fn RedisClient::zcount(Self, String, min~ : String, max~ : String) -> Result[Int, String]
+pub async fn RedisClient::zdiff(Self, String, Array[String]) -> Result[Array[String], String]
+pub async fn RedisClient::zdiffstore(Self, String, String, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::zincrby(Self, String, increment~ : String, value~ : String) -> Result[String, String]
+pub async fn RedisClient::zinter(Self, String, Array[String]) -> Result[Array[String], String]
+pub async fn RedisClient::zintercard(Self, String, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::zinterstore(Self, String, String, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::zlexcount(Self, String, min~ : String, max~ : String) -> Result[Int, String]
+pub async fn RedisClient::zmpop(Self, String, Array[String], String) -> Result[Array[String], String]
+pub async fn RedisClient::zmscore(Self, String, Array[String]) -> Result[Array[String], String]
+pub async fn RedisClient::zpopmax(Self, String) -> Result[String, String]
+pub async fn RedisClient::zpopmin(Self, String) -> Result[String, String]
+pub async fn RedisClient::zrandmember(Self, String) -> Result[String, String]
+pub async fn RedisClient::zrange(Self, String, start~ : String, stop~ : String) -> Result[Array[String], String]
+pub async fn RedisClient::zrangebylex(Self, String, min~ : String, max~ : String) -> Result[Array[String], String]
+pub async fn RedisClient::zrangebyscore(Self, String, min~ : String, max~ : String) -> Result[Array[String], String]
+pub async fn RedisClient::zrangestore(Self, String, String, min~ : String, max~ : String) -> Result[Int, String]
+pub async fn RedisClient::zrank(Self, String, String) -> Result[Int, String]
+pub async fn RedisClient::zrem(Self, String, Array[String]) -> Result[Int, String]
+pub async fn RedisClient::zremrangebylex(Self, String, String, String) -> Result[Int, String]
+pub async fn RedisClient::zremrangebyrank(Self, String, String, String) -> Result[Int, String]
+pub async fn RedisClient::zremrangebyscore(Self, String, String, String) -> Result[Int, String]
+pub async fn RedisClient::zrevrange(Self, String, start~ : String, stop~ : String) -> Result[Array[String], String]
+pub async fn RedisClient::zrevrangebylex(Self, String, max~ : String, min~ : String) -> Result[Array[String], String]
+pub async fn RedisClient::zrevrangebyscore(Self, String, max~ : String, min~ : String) -> Result[Array[String], String]
+pub async fn RedisClient::zrevrank(Self, String, String) -> Result[Int, String]
+pub async fn RedisClient::zscan(Self, String, String) -> Result[Array[String], String]
+pub async fn RedisClient::zscore(Self, String, String) -> Result[String, String]
+pub async fn RedisClient::zunion(Self, String, Array[String]) -> Result[Array[String], String]
+pub async fn RedisClient::zunionstore(Self, String, String, Array[String]) -> Result[Int, String]
 
 pub(all) struct RedisStream {
   name : String
   messages : Array[RedisStreamMessage]
 }
-impl Show for RedisStream
+pub impl Show for RedisStream
 
 pub(all) struct RedisStreamMessage {
   id : String
   fields : Array[String]
 }
-impl Show for RedisStreamMessage
+pub impl Show for RedisStreamMessage
 
 pub(all) enum RedisValue {
   SimpleString(String)
@@ -404,16 +404,17 @@ pub(all) enum RedisValue {
   BulkString(String?)
   Array(Array[RedisValue])
 }
-fn RedisValue::to_array(Self) -> Result[Array[String], String]
-fn RedisValue::to_bool(Self) -> Result[Bool, String]
-fn RedisValue::to_bulk_string(Self) -> Result[String?, String]
-fn RedisValue::to_int(Self) -> Result[Int, String]
-fn RedisValue::to_stream(Self) -> Result[RedisStream, String]
-fn RedisValue::to_stream_message_array(Self) -> Result[Array[RedisStreamMessage], String]
-fn RedisValue::to_string(Self) -> Result[String, String]
-impl Eq for RedisValue
-impl Hash for RedisValue
-impl Show for RedisValue
+pub fn RedisValue::to_array(Self) -> Result[Array[String], String]
+pub fn RedisValue::to_bool(Self) -> Result[Bool, String]
+pub fn RedisValue::to_bulk_string(Self) -> Result[String?, String]
+pub fn RedisValue::to_int(Self) -> Result[Int, String]
+pub fn RedisValue::to_json(Self) -> Result[Json, String]
+pub fn RedisValue::to_stream(Self) -> Result[RedisStream, String]
+pub fn RedisValue::to_stream_message_array(Self) -> Result[Array[RedisStreamMessage], String]
+pub fn RedisValue::to_string(Self) -> Result[String, String]
+pub impl Eq for RedisValue
+pub impl Hash for RedisValue
+pub impl Show for RedisValue
 
 pub(all) enum SetCondition {
   NX
@@ -440,23 +441,25 @@ pub(all) struct ZAddMember {
 }
 
 // Type aliases
-pub typealias Result[Array[String], String] as RedisArray
+pub type RedisArray = Result[Array[String], String]
 
-pub typealias Result[Bool, String] as RedisBool
+pub type RedisBool = Result[Bool, String]
 
-pub typealias Result[String?, String] as RedisBulkString
+pub type RedisBulkString = Result[String?, String]
 
-pub typealias Result[Map[String, String], String] as RedisHash
+pub type RedisHash = Result[Map[String, String], String]
 
-pub typealias Result[Int, String] as RedisInt
+pub type RedisInt = Result[Int, String]
 
-pub typealias Result[T, String] as RedisResult[T]
+pub type RedisJson = Result[Json, String]
 
-pub typealias Result[Array[RedisStreamMessage], String] as RedisStreamMessageArray
+pub type RedisResult[T] = Result[T, String]
 
-pub typealias Result[RedisStream, String] as RedisStreamResult
+pub type RedisStreamMessageArray = Result[Array[RedisStreamMessage], String]
 
-pub typealias Result[String, String] as RedisString
+pub type RedisStreamResult = Result[RedisStream, String]
+
+pub type RedisString = Result[String, String]
 
 // Traits
 

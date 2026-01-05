@@ -17,35 +17,35 @@ pub(all) enum RedisValue {
 
 ///|
 /// Redis命令的结果类型
-pub typealias Result[T, String] as RedisResult[T]
+pub type RedisResult[T] = Result[T, String]
 
 ///|
 /// 常用的具体返回类型
-pub typealias RedisResult[String] as RedisString
+pub type RedisString = RedisResult[String]
 
 ///|
-pub typealias RedisResult[Json] as RedisJson
+pub type RedisJson = RedisResult[Json]
 
 ///|
-pub typealias RedisResult[String?] as RedisBulkString
+pub type RedisBulkString = RedisResult[String?]
 
 ///|
-pub typealias RedisResult[Int] as RedisInt
+pub type RedisInt = RedisResult[Int]
 
 ///|
-pub typealias RedisResult[Bool] as RedisBool
+pub type RedisBool = RedisResult[Bool]
 
 ///|
-pub typealias RedisResult[Array[String]] as RedisArray
+pub type RedisArray = RedisResult[Array[String]]
 
 ///|
-pub typealias RedisResult[Map[String, String]] as RedisHash
+pub type RedisHash = RedisResult[Map[String, String]]
 
 ///|
-pub typealias RedisResult[RedisStream] as RedisStreamResult
+pub type RedisStreamResult = RedisResult[RedisStream]
 
 ///|
-pub typealias RedisResult[Array[RedisStreamMessage]] as RedisStreamMessageArray
+pub type RedisStreamMessageArray = RedisResult[Array[RedisStreamMessage]]
 
 ///|
 pub(all) struct RedisStreamMessage {
@@ -232,7 +232,9 @@ fn extract_line_content(text : String, start : Int) -> String {
   let mut result = ""
   while i < len {
     let char_code = text[i]
-    if char_code == '\r'.to_int() && i + 1 < len && text[i + 1] == '\n'.to_int() {
+    if char_code == '\r'.to_int().to_uint16() &&
+      i + 1 < len &&
+      text[i + 1] == '\n'.to_int().to_uint16() {
       break
     }
     result = result + char_code.unsafe_to_char().to_string()
@@ -254,8 +256,8 @@ fn parse_bulk_string_value(response : String) -> RedisValue {
   // 找到内容开始位置
   let mut content_start = 1
   while content_start < response.length() - 1 {
-    if response[content_start] == '\r'.to_int() &&
-      response[content_start + 1] == '\n'.to_int() {
+    if response[content_start] == '\r'.to_int().to_uint16() &&
+      response[content_start + 1] == '\n'.to_int().to_uint16() {
       content_start = content_start + 2
       break
     }
@@ -276,18 +278,19 @@ fn parse_array_value(response : String) -> RedisValue {
   }
 
   // 解析数组元素个数
-  let count = match (try? @strconv.parse_int(count_str)) {
-    Ok(n) => n
-    Err(_) => return Error("Invalid array count: \{count_str}")
+  let count = try @strconv.parse_int(count_str) catch {
+    _ => return Error("Invalid array count: \{count_str}")
+  } noraise {
+    n => n
   }
   if count == 0 {
     return Array([])
   }
-
   // 找到第一个元素的开始位置（跳过 *count\r\n）
   let mut pos = 1
   while pos < response.length() - 1 {
-    if response[pos] == '\r'.to_int() && response[pos + 1] == '\n'.to_int() {
+    if response[pos] == '\r'.to_int().to_uint16() &&
+      response[pos + 1] == '\n'.to_int().to_uint16() {
       pos = pos + 2
       break
     }
@@ -337,9 +340,10 @@ fn extract_element_data(
         let element_str = try! response[start_pos:end_pos].to_string()
         Ok((element_str, end_pos))
       } else {
-        let length = match (try? @strconv.parse_int(length_str)) {
-          Ok(n) => n
-          Err(_) => return Err("Invalid bulk string length")
+        let length = try @strconv.parse_int(length_str) catch {
+          _ => return Err("Invalid bulk string length")
+        } noraise {
+          n => n
         }
         // 计算整个批量字符串的结束位置
         let length_line_end = find_line_end(response, start_pos) + 2
@@ -372,18 +376,21 @@ fn extract_array_data(
   if count_str == "-1" {
     // null数组：*-1\r\n
     let end_pos = find_line_end(response, start_pos) + 2
-    let element_str = try! response[start_pos:end_pos].to_string()
-    return Ok((element_str, end_pos))
+    return Ok((response[start_pos:end_pos].to_string(), end_pos)) catch {
+      _ => Err("Invalid array count")
+    }
   }
-  let count = match (try? @strconv.parse_int(count_str)) {
-    Ok(n) => n
-    Err(_) => return Err("Invalid array count")
+  let count = try @strconv.parse_int(count_str) catch {
+    _ => return Err("Invalid array count")
+  } noraise {
+    n => n
   }
   if count == 0 {
     // 空数组：*0\r\n
     let end_pos = find_line_end(response, start_pos) + 2
-    let element_str = try! response[start_pos:end_pos].to_string()
-    return Ok((element_str, end_pos))
+    return Ok((response[start_pos:end_pos].to_string(), end_pos)) catch {
+      _ => Err("Invalid array count")
+    }
   }
 
   // 找到数组内容开始位置
@@ -405,7 +412,8 @@ fn extract_array_data(
 fn find_line_end(text : String, start : Int) -> Int {
   let mut i = start
   while i < text.length() - 1 {
-    if text[i] == '\r'.to_int() && text[i + 1] == '\n'.to_int() {
+    if text[i] == '\r'.to_int().to_uint16() &&
+      text[i + 1] == '\n'.to_int().to_uint16() {
       return i
     }
     i = i + 1

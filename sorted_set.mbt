@@ -13,10 +13,10 @@ pub async fn RedisClient::zadd(
   zadd_members : Array[ZAddMember],
 ) -> RedisInt {
   let args = [
-      "ZADD",
-      key,
-      ..zadd_members.map(m => [m.score, m.value]).flatten(),
-    ]
+    "ZADD",
+    key,
+    ..zadd_members.map(m => [m.score, m.value]).flatten(),
+  ]
   self.send(args).to_int()
 }
 

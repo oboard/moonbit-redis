@@ -1,11 +1,11 @@
 ///|
 pub struct RedisClient {
-  conn : @socket.TCP
+  conn : @socket.Tcp
 }
 
 ///|
 pub async fn connect(host : String, port : Int) -> RedisClient {
-  let conn = @socket.TCP::connect_to_host(host, port~)
+  let conn = @socket.Tcp::connect_to_host(host, port~)
   conn.enable_keepalive()
   { conn, }
 }

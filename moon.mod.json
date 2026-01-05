@@ -1,8 +1,8 @@
 {
   "name": "oboard/redis",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "deps": {
-    "moonbitlang/async": "0.8.1"
+    "moonbitlang/async": "0.16.0"
   },
   "readme": "README.mbt.md",
   "repository": "https://github.com/oboard/moonbit-redis",
