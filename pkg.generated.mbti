@@ -1,9 +1,9 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "oboard/redis"
 
-import(
-  "moonbitlang/async/socket"
-)
+import {
+  "moonbitlang/async/socket",
+}
 
 // Values
 pub async fn connect(String, Int) -> RedisClient

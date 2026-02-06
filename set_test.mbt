@@ -3,7 +3,7 @@
 ///|
 /// 测试SADD和SREM命令
 async test "set_sadd_srem" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -17,14 +17,13 @@ async test "set_sadd_srem" {
 
     // 清理
     let _ = client.del(["test:set"])
-
   })
 }
 
 ///|
 /// 测试SCARD命令
 async test "set_scard" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -37,14 +36,13 @@ async test "set_scard" {
 
     // 清理
     let _ = client.del(["test:set"])
-
   })
 }
 
 ///|
 /// 测试SISMEMBER命令
 async test "set_sismember" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -61,14 +59,13 @@ async test "set_sismember" {
 
     // 清理
     let _ = client.del(["test:set"])
-
   })
 }
 
 ///|
 /// 测试SMEMBERS命令
 async test "set_smembers" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -81,14 +78,13 @@ async test "set_smembers" {
 
     // 清理
     let _ = client.del(["test:set"])
-
   })
 }
 
 ///|
 /// 测试SPOP命令
 async test "set_spop" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -106,14 +102,13 @@ async test "set_spop" {
 
     // 清理
     let _ = client.del(["test:set"])
-
   })
 }
 
 ///|
 /// 测试SRANDMEMBER命令
 async test "set_srandmember" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -133,6 +128,5 @@ async test "set_srandmember" {
 
     // 清理
     let _ = client.del(["test:set"])
-
   })
 }

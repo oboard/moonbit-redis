@@ -3,7 +3,7 @@
 ///|
 /// 测试LPUSH和RPUSH命令
 async test "list_push" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -17,14 +17,13 @@ async test "list_push" {
 
     // 清理
     let _ = client.del(["test:list"])
-
   })
 }
 
 ///|
 /// 测试LPOP和RPOP命令
 async test "list_pop" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -41,14 +40,13 @@ async test "list_pop" {
 
     // 清理
     let _ = client.del(["test:list"])
-
   })
 }
 
 ///|
 /// 测试LLEN命令
 async test "list_llen" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -64,14 +62,13 @@ async test "list_llen" {
 
     // 清理
     let _ = client.del(["test:list"])
-
   })
 }
 
 ///|
 /// 测试LRANGE命令
 async test "list_lrange" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -86,14 +83,13 @@ async test "list_lrange" {
 
     // 清理
     let _ = client.del(["test:list"])
-
   })
 }
 
 ///|
 /// 测试LINDEX命令
 async test "list_lindex" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -106,14 +102,13 @@ async test "list_lindex" {
 
     // 清理
     let _ = client.del(["test:list"])
-
   })
 }
 
 ///|
 /// 测试LREM命令
 async test "list_lrem" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -130,6 +125,5 @@ async test "list_lrem" {
 
     // 清理
     let _ = client.del(["test:list"])
-
   })
 }

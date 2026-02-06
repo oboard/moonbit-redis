@@ -3,7 +3,7 @@
 ///|
 /// Test publish command
 async test "publish command" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -17,7 +17,7 @@ async test "publish command" {
 
 ///|
 async test "complex subscription scenario" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client1 = connect("localhost", 6379)
     let client2 = connect("localhost", 6379)
     let client3 = connect("localhost", 6379)
@@ -39,6 +39,5 @@ async test "complex subscription scenario" {
     // Clean up subscriptions
     let _ = client1.unsubscribe()
     let _ = client2.punsubscribe()
-
   })
 }

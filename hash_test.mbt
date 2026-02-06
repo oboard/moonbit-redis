@@ -3,7 +3,7 @@
 ///|
 /// 测试HSET和HGET命令
 async test "hash_hset_hget" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -17,14 +17,13 @@ async test "hash_hset_hget" {
 
     // 清理 
     let _ = client.del(["test:hash"])
-
   })
 }
 
 ///|
 /// 测试HDEL命令
 async test "hash_hdel" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -38,14 +37,13 @@ async test "hash_hdel" {
 
     // 清理 
     let _ = client.del(["test:hash"])
-
   })
 }
 
 ///|
 /// 测试HKEYS和HVALS命令
 async test "hash_hkeys_hvals" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -63,14 +61,13 @@ async test "hash_hkeys_hvals" {
 
     // 清理
     let _ = client.del(["test:hash"])
-
   })
 }
 
 ///|
 /// 测试HGETALL命令
 async test "hash_hgetall" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -84,14 +81,13 @@ async test "hash_hgetall" {
 
     // 清理
     let _ = client.del(["test:hash"])
-
   })
 }
 
 ///|
 /// 测试HEXISTS和HLEN命令
 async test "hash_hexists_hlen" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -113,14 +109,13 @@ async test "hash_hexists_hlen" {
 
     // 清理
     let _ = client.del(["test:hash"])
-
   })
 }
 
 ///|
 /// 测试HSET多个字段
 async test "hash_multiple_fields" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -135,14 +130,13 @@ async test "hash_multiple_fields" {
 
     // 清理
     let _ = client.del(["test:hash"])
-
   })
 }
 
 ///|
 /// 测试hash字段操作
 async test "hash_field_operations" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -160,6 +154,5 @@ async test "hash_field_operations" {
 
     // 清理
     let _ = client.del(["test:hash"])
-
   })
 }

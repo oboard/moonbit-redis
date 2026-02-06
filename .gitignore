@@ -3,3 +3,5 @@ target/
 .mooncakes/
 .moonagent/
 commands/
+target
+_build/

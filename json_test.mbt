@@ -4,7 +4,7 @@
 ///|
 /// 测试基础 JSON 操作：SET, GET, DEL, TYPE
 async test "json basic operations" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -40,14 +40,13 @@ async test "json basic operations" {
 
     // 清理
     let _ = client.json_del("user:1", "$")
-
   })
 }
 
 ///|
 /// 测试 JSON 数组操作
 async test "json array operations" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -84,14 +83,13 @@ async test "json array operations" {
 
     // 清理
     let _ = client.json_del("arr:1", "$")
-
   })
 }
 
 ///|
 /// 测试 JSON 对象操作
 async test "json object operations" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -117,14 +115,13 @@ async test "json object operations" {
 
     // 清理
     let _ = client.json_del("obj:1", "$")
-
   })
 }
 
 ///|
 /// 测试 JSON 数值操作
 async test "json numeric operations" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -145,14 +142,13 @@ async test "json numeric operations" {
 
     // 清理
     let _ = client.json_del("num:1", "$")
-
   })
 }
 
 ///|
 /// 测试 JSON 字符串操作
 async test "json string operations" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -177,14 +173,13 @@ async test "json string operations" {
 
     // 清理
     let _ = client.json_del("str:1", "$")
-
   })
 }
 
 ///|
 /// 测试 JSON 布尔值和其他操作
 async test "json boolean and misc operations" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -222,14 +217,13 @@ async test "json boolean and misc operations" {
     // 清理
     let _ = client.json_del("bool:1", "$")
     let _ = client.json_del("clear:1", "$")
-
   })
 }
 
 ///|
 /// 测试错误情况和边界条件
 async test "json error cases and edge conditions" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -262,6 +256,5 @@ async test "json error cases and edge conditions" {
     let _ = client.json_del("edge:1", "$")
     let _ = client.json_del("edge:2", "$")
     let _ = client.json_del("edge:3", "$")
-
   })
 }

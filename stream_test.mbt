@@ -4,7 +4,7 @@
 ///|
 /// 测试XADD命令 - 添加条目到流
 async test "stream_xadd" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -17,14 +17,13 @@ async test "stream_xadd" {
 
     // 清理
     let _ = client.del(["test:stream"])
-
   })
 }
 
 ///|
 /// 测试XLEN命令 - 获取流长度
 async test "stream_xlen" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -38,14 +37,13 @@ async test "stream_xlen" {
 
     // 清理
     let _ = client.del(["test:stream"])
-
   })
 }
 
 ///|
 /// 测试XRANGE命令 - 范围查询
 async test "stream_xrange" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -68,14 +66,13 @@ async test "stream_xrange" {
 
     // 清理
     let _ = client.del(["test:stream"])
-
   })
 }
 
 ///|
 /// 测试XREVRANGE命令 - 反向范围查询
 async test "stream_xrevrange" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -91,14 +88,13 @@ async test "stream_xrevrange" {
 
     // 清理
     let _ = client.del(["test:stream"])
-
   })
 }
 
 ///|
 /// 测试XDEL命令 - 删除流条目
 async test "stream_xdel" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -120,14 +116,13 @@ async test "stream_xdel" {
 
     // 清理
     let _ = client.del(["test:stream"])
-
   })
 }
 
 ///|
 /// 测试XTRIM命令 - 修剪流
 async test "stream_xtrim" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -153,14 +148,13 @@ async test "stream_xtrim" {
 
     // 清理
     let _ = client.del(["test:stream"])
-
   })
 }
 
 ///|
 /// 测试消费者组基本操作
 async test "stream_consumer_group_basic" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -191,14 +185,13 @@ async test "stream_consumer_group_basic" {
 
     // 清理
     let _ = client.del(["test:stream"])
-
   })
 }
 
 ///|
 /// 测试XREAD命令 - 读取流条目
 async test "stream_xread" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -212,14 +205,13 @@ async test "stream_xread" {
 
     // 清理
     let _ = client.del(["test:stream"])
-
   })
 }
 
 ///|
 /// 测试消费者组读取和确认
 async test "stream_consumer_group_read_ack" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -246,14 +238,13 @@ async test "stream_consumer_group_read_ack" {
     // 清理
     let _ = client.xgroup_destroy("test:stream", "test_group")
     let _ = client.del(["test:stream"])
-
   })
 }
 
 ///|
 /// 测试XPENDING命令 - 查看待处理消息
 async test "stream_xpending" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -275,14 +266,13 @@ async test "stream_xpending" {
     // 清理
     let _ = client.xgroup_destroy("test:stream", "test_group")
     let _ = client.del(["test:stream"])
-
   })
 }
 
 ///|
 /// 测试XINFO命令 - 获取流信息
 async test "stream_xinfo" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -314,14 +304,13 @@ async test "stream_xinfo" {
     // 清理
     let _ = client.xgroup_destroy("test:stream", "test_group")
     let _ = client.del(["test:stream"])
-
   })
 }
 
 ///|
 /// 测试复杂的流操作场景
 async test "stream_complex_scenario" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -387,14 +376,13 @@ async test "stream_complex_scenario" {
     let _ = client.xgroup_destroy("test:orders", "payment_processor")
     let _ = client.xgroup_destroy("test:orders", "inventory_manager")
     let _ = client.del(["test:orders"])
-
   })
 }
 
 ///|
 /// 测试边界情况和错误处理
 async test "stream_edge_cases" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -434,6 +422,5 @@ async test "stream_edge_cases" {
     // 清理
     let _ = client.xgroup_destroy("test:stream", "test_group")
     let _ = client.del(["test:stream"])
-
   })
 }

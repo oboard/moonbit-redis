@@ -1,6 +1,6 @@
 ///|
 async test "ping" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = @redis.connect("localhost", 6379)
     defer client.close()
     let pong = client.ping()

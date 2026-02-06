@@ -1,7 +1,7 @@
 ///|
 /// String命令测试套件
 async test "string_ping" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
     let pong = client.ping()
@@ -12,7 +12,7 @@ async test "string_ping" {
 ///|
 /// 测试SET和GET命令
 async test "string_set_get" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -26,14 +26,13 @@ async test "string_set_get" {
 
     // 清理
     let _ = client.del(["test:string"])
-
   })
 }
 
 ///|
 /// 测试APPEND命令
 async test "string_append" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -50,14 +49,13 @@ async test "string_append" {
 
     // 清理
     let _ = client.del(["test:string"])
-
   })
 }
 
 ///|
 /// 测试INCR和DECR命令
 async test "string_incr_decr" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -74,14 +72,13 @@ async test "string_incr_decr" {
 
     // 清理
     let _ = client.del(["test:counter"])
-
   })
 }
 
 ///|
 /// 测试STRLEN命令
 async test "string_strlen" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -94,14 +91,13 @@ async test "string_strlen" {
 
     // 清理
     let _ = client.del(["test:string"])
-
   })
 }
 
 ///|
 /// 测试MSET和MGET命令
 async test "string_mset_mget" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -115,6 +111,5 @@ async test "string_mset_mget" {
 
     // 清理
     let _ = client.del(["key1", "key2"])
-
   })
 }

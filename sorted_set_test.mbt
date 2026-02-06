@@ -3,7 +3,7 @@
 ///|
 /// 测试ZADD和ZREM命令
 async test "zset_zadd_zrem" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -21,14 +21,13 @@ async test "zset_zadd_zrem" {
 
     // 清理
     let _ = client.del(["test:zset"])
-
   })
 }
 
 ///|
 /// 测试ZCARD命令
 async test "zset_zcard" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -45,14 +44,13 @@ async test "zset_zcard" {
 
     // 清理
     let _ = client.del(["test:zset"])
-
   })
 }
 
 ///|
 /// 测试ZSCORE命令
 async test "zset_zscore" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -68,14 +66,13 @@ async test "zset_zscore" {
 
     // 清理
     let _ = client.del(["test:zset"])
-
   })
 }
 
 ///|
 /// 测试ZRANK命令
 async test "zset_zrank" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -92,14 +89,13 @@ async test "zset_zrank" {
 
     // 清理
     let _ = client.del(["test:zset"])
-
   })
 }
 
 ///|
 /// 测试ZRANGE命令
 async test "zset_zrange" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -116,14 +112,13 @@ async test "zset_zrange" {
 
     // 清理
     let _ = client.del(["test:zset"])
-
   })
 }
 
 ///|
 /// 测试ZREVRANGE命令
 async test "zset_zrevrange" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -140,14 +135,13 @@ async test "zset_zrevrange" {
 
     // 清理
     let _ = client.del(["test:zset"])
-
   })
 }
 
 ///|
 /// 测试ZINCRBY命令
 async test "zset_zincrby" {
-  @async.with_task_group(fn(_root) {
+  @async.with_task_group(async fn(_root) {
     let client = connect("localhost", 6379)
     defer client.close()
 
@@ -170,6 +164,5 @@ async test "zset_zincrby" {
 
     // 清理
     let _ = client.del(["test:zset"])
-
   })
 }
