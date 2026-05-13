@@ -32,11 +32,11 @@ async test "list_pop" {
 
     // 测试LPOP
     let lpop_result = client.lpop("test:list")
-    inspect(lpop_result is Ok("item1"), content="true")
+    debug_inspect(lpop_result is Ok("item1"), content="true")
 
     // 测试RPOP
     let rpop_result = client.rpop("test:list")
-    inspect(rpop_result is Ok("item3"), content="true")
+    debug_inspect(rpop_result is Ok("item3"), content="true")
 
     // 清理
     let _ = client.del(["test:list"])

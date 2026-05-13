@@ -32,7 +32,7 @@ async test "set_scard" {
 
     // 测试SCARD
     let scard_result = client.scard("test:set")
-    inspect(scard_result is Ok(3), content="true")
+    debug_inspect(scard_result is Ok(3), content="true")
 
     // 清理
     let _ = client.del(["test:set"])
@@ -51,11 +51,11 @@ async test "set_sismember" {
 
     // 测试SISMEMBER - 存在的成员
     let sismember_result1 = client.sismember("test:set", "member1")
-    inspect(sismember_result1 is Ok(1), content="true")
+    debug_inspect(sismember_result1 is Ok(1), content="true")
 
     // 测试SISMEMBER - 不存在的成员
     let sismember_result2 = client.sismember("test:set", "member4")
-    inspect(sismember_result2 is Ok(0), content="true")
+    debug_inspect(sismember_result2 is Ok(0), content="true")
 
     // 清理
     let _ = client.del(["test:set"])

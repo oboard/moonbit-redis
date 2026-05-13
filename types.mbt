@@ -13,7 +13,17 @@ pub(all) enum RedisValue {
   BulkString(String?)
   // 数组: *count\r\n<element1><element2>...
   Array(Array[RedisValue])
-} derive(Show, Hash, Eq)
+} derive(Debug, Hash, Eq)
+
+///|
+pub impl Show for RedisValue with output(self, logger : &Logger) -> Unit {
+  logger.write_string(@debug.to_string(self))
+}
+
+///|
+pub impl Show for RedisValue with to_string(self) -> String {
+  @debug.to_string(self)
+}
 
 ///|
 /// Redis命令的结果类型
@@ -51,13 +61,36 @@ pub type RedisStreamMessageArray = RedisResult[Array[RedisStreamMessage]]
 pub(all) struct RedisStreamMessage {
   id : String
   fields : Array[String]
-} derive(Show)
+} derive(Debug)
+
+///|
+pub impl Show for RedisStreamMessage with output(
+  self : RedisStreamMessage,
+  logger : &Logger,
+) -> Unit {
+  logger.write_string(@debug.to_string(self))
+}
+
+///|
+pub impl Show for RedisStreamMessage with to_string(self : RedisStreamMessage) -> String {
+  @debug.to_string(self)
+}
 
 ///|
 pub(all) struct RedisStream {
   name : String
   messages : Array[RedisStreamMessage]
-} derive(Show)
+} derive(Debug)
+
+///|
+pub impl Show for RedisStream with output(self : RedisStream, logger : &Logger) -> Unit {
+  logger.write_string(@debug.to_string(self))
+}
+
+///|
+pub impl Show for RedisStream with to_string(self : RedisStream) -> String {
+  @debug.to_string(self)
+}
 
 ///|
 pub fn RedisValue::to_stream(self : RedisValue) -> RedisStreamResult {
@@ -187,15 +220,14 @@ pub fn RedisValue::to_array(self : RedisValue) -> RedisArray {
       let result = Array::new()
       for item in arr {
         match item.to_string() {
-          Result::Ok(s) => result.push(s)
-          Result::Err(_) =>
-            return Result::Err("Array contains non-string elements")
+          Ok(s) => result.push(s)
+          Err(_) => return Err("Array contains non-string elements")
         }
       }
-      Result::Ok(result)
+      Ok(result)
     }
-    Error(e) => Result::Err(e)
-    _ => Result::Err("Type mismatch: expected array")
+    Error(e) => Err(e)
+    _ => Err("Type mismatch: expected array")
   }
 }
 
@@ -212,10 +244,10 @@ pub fn parse_redis_response(response : String) -> RedisValue {
     ':' => {
       let int_str = extract_line_content(response, 1)
       // 简单的字符串转整数实现
-      if (try? @strconv.parse_int(int_str)) is Ok(i) {
-        Integer(i)
-      } else {
-        Error("Invalid integer: \{int_str}")
+      try @string.parse_int(int_str) catch {
+        _ => Error("Invalid integer: \{int_str}")
+      } noraise {
+        i => Integer(i)
       }
     }
     '$' => parse_bulk_string_value(response)
@@ -278,7 +310,7 @@ fn parse_array_value(response : String) -> RedisValue {
   }
 
   // 解析数组元素个数
-  let count = try @strconv.parse_int(count_str) catch {
+  let count = try @string.parse_int(count_str) catch {
     _ => return Error("Invalid array count: \{count_str}")
   } noraise {
     n => n
@@ -337,10 +369,10 @@ fn extract_element_data(
       if length_str == "-1" {
         // null字符串：$-1\r\n
         let end_pos = find_line_end(response, start_pos) + 2
-        let element_str = try! response[start_pos:end_pos].to_string()
+        let element_str = response[start_pos:end_pos].to_owned()
         Ok((element_str, end_pos))
       } else {
-        let length = try @strconv.parse_int(length_str) catch {
+        let length = try @string.parse_int(length_str) catch {
           _ => return Err("Invalid bulk string length")
         } noraise {
           n => n
@@ -349,14 +381,14 @@ fn extract_element_data(
         let length_line_end = find_line_end(response, start_pos) + 2
         let content_end = length_line_end + length
         let element_end = content_end + 2 // 加上最后的\r\n
-        let element_str = try! response[start_pos:element_end].to_string()
+        let element_str = response[start_pos:element_end].to_owned()
         Ok((element_str, element_end))
       }
     }
     '+' | '-' | ':' => {
       // 简单字符串、错误、整数：都是单行格式
       let line_end = find_line_end(response, start_pos) + 2
-      let element_str = try! response[start_pos:line_end].to_string()
+      let element_str = response[start_pos:line_end].to_owned()
       Ok((element_str, line_end))
     }
     '*' =>
@@ -376,11 +408,9 @@ fn extract_array_data(
   if count_str == "-1" {
     // null数组：*-1\r\n
     let end_pos = find_line_end(response, start_pos) + 2
-    return Ok((response[start_pos:end_pos].to_string(), end_pos)) catch {
-      _ => Err("Invalid array count")
-    }
+    return Ok((response[start_pos:end_pos].to_owned(), end_pos))
   }
-  let count = try @strconv.parse_int(count_str) catch {
+  let count = try @string.parse_int(count_str) catch {
     _ => return Err("Invalid array count")
   } noraise {
     n => n
@@ -388,9 +418,7 @@ fn extract_array_data(
   if count == 0 {
     // 空数组：*0\r\n
     let end_pos = find_line_end(response, start_pos) + 2
-    return Ok((response[start_pos:end_pos].to_string(), end_pos)) catch {
-      _ => Err("Invalid array count")
-    }
+    return Ok((response[start_pos:end_pos].to_owned(), end_pos))
   }
 
   // 找到数组内容开始位置
@@ -403,7 +431,7 @@ fn extract_array_data(
       Err(err) => return Err("Failed to parse nested element: \{err}")
     }
   }
-  let element_str = try! response[start_pos:current_pos].to_string()
+  let element_str = response[start_pos:current_pos].to_owned()
   Ok((element_str, current_pos))
 }
 

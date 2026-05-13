@@ -33,7 +33,7 @@ async test "hash_hdel" {
 
     // 测试HDEL
     let hdel_result = client.hdel("test:hash", ["field1"])
-    inspect(hdel_result is Ok(1), content="true")
+    debug_inspect(hdel_result is Ok(1), content="true")
 
     // 清理 
     let _ = client.del(["test:hash"])
@@ -126,7 +126,7 @@ async test "hash_multiple_fields" {
 
     // 验证字段数量
     let hlen_result = client.hlen("test:hash")
-    inspect(hlen_result is Ok(3), content="true")
+    debug_inspect(hlen_result is Ok(3), content="true")
 
     // 清理
     let _ = client.del(["test:hash"])

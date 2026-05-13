@@ -3,6 +3,7 @@ package "oboard/redis"
 
 import {
   "moonbitlang/async/socket",
+  "moonbitlang/core/debug",
 }
 
 // Values
@@ -388,13 +389,13 @@ pub async fn RedisClient::zunionstore(Self, String, String, Array[String]) -> Re
 pub(all) struct RedisStream {
   name : String
   messages : Array[RedisStreamMessage]
-}
+} derive(@debug.Debug)
 pub impl Show for RedisStream
 
 pub(all) struct RedisStreamMessage {
   id : String
   fields : Array[String]
-}
+} derive(@debug.Debug)
 pub impl Show for RedisStreamMessage
 
 pub(all) enum RedisValue {
@@ -403,7 +404,7 @@ pub(all) enum RedisValue {
   Integer(Int)
   BulkString(String?)
   Array(Array[RedisValue])
-}
+} derive(Eq, Hash, @debug.Debug)
 pub fn RedisValue::to_array(Self) -> Result[Array[String], String]
 pub fn RedisValue::to_bool(Self) -> Result[Bool, String]
 pub fn RedisValue::to_bulk_string(Self) -> Result[String?, String]
@@ -412,8 +413,6 @@ pub fn RedisValue::to_json(Self) -> Result[Json, String]
 pub fn RedisValue::to_stream(Self) -> Result[RedisStream, String]
 pub fn RedisValue::to_stream_message_array(Self) -> Result[Array[RedisStreamMessage], String]
 pub fn RedisValue::to_string(Self) -> Result[String, String]
-pub impl Eq for RedisValue
-pub impl Hash for RedisValue
 pub impl Show for RedisValue
 
 pub(all) enum SetCondition {

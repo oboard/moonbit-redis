@@ -48,7 +48,7 @@ pub async fn RedisClient::hgetall(
   match redis_value.to_array() {
     Ok(arr) => {
       // 将平坦数组转换为键值对
-      let pairs = Map::new()
+      let pairs = Map([])
       let mut i = 0
       while i < arr.length() - 1 {
         pairs.set(arr[i], arr[i + 1])

@@ -348,7 +348,7 @@ async test "stream_complex_scenario" {
       count=2,
       [("test:orders", ">")],
     )
-    println(payment_messages)
+    @debug.debug(payment_messages)
     assert_true(payment_messages is Ok(_))
     let inventory_messages = client.xreadgroup(
       "inventory_manager",
@@ -394,7 +394,7 @@ async test "stream_edge_cases" {
     let empty_len = client.xlen("nonexistent:stream")
     assert_true(empty_len.unwrap() == 0)
     let empty_range = client.xrange("nonexistent:stream", start="-", end="+")
-    println(empty_range)
+    @debug.debug(empty_range)
     assert_true(empty_range is Ok([]))
 
     // 测试删除不存在的条目
