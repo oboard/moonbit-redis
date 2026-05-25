@@ -2,10 +2,21 @@
 // 需要 Redis 服务器 6.2 或以上版本 才能运行 JSON 命令
 
 ///|
+async fn redis_json_available(client : RedisClient) -> Bool {
+  match client.json_get("__moonbit_redis_json_probe__", "$") {
+    Err(message) => !message.contains("unknown command")
+    _ => true
+  }
+}
+
+///|
 /// 测试基础 JSON 操作：SET, GET, DEL, TYPE
 async test "json basic operations" {
   let client = connect("localhost", 6379)
   defer client.close()
+  if !redis_json_available(client) {
+    return
+  }
 
   // 测试 JSON.SET 和 JSON.GET
   let set_result = client.json_set(
@@ -52,6 +63,9 @@ async test "json basic operations" {
 async test "json array operations" {
   let client = connect("localhost", 6379)
   defer client.close()
+  if !redis_json_available(client) {
+    return
+  }
 
   // 设置初始数组
   let _ = client.json_set("arr:1", "$", "[1,2,3]")
@@ -105,6 +119,9 @@ async test "json array operations" {
 async test "json object operations" {
   let client = connect("localhost", 6379)
   defer client.close()
+  if !redis_json_available(client) {
+    return
+  }
 
   // 设置初始对象
   let _ = client.json_set(
@@ -138,6 +155,9 @@ async test "json object operations" {
 async test "json numeric operations" {
   let client = connect("localhost", 6379)
   defer client.close()
+  if !redis_json_available(client) {
+    return
+  }
 
   // 设置初始数值
   let _ = client.json_set("num:1", "$", "{\"counter\":10,\"price\":99.99}")
@@ -163,6 +183,9 @@ async test "json numeric operations" {
 async test "json string operations" {
   let client = connect("localhost", 6379)
   defer client.close()
+  if !redis_json_available(client) {
+    return
+  }
 
   // 设置初始字符串
   let _ = client.json_set("str:1", "$", "{\"message\":\"Hello\"}")
@@ -190,6 +213,9 @@ async test "json string operations" {
 async test "json boolean and misc operations" {
   let client = connect("localhost", 6379)
   defer client.close()
+  if !redis_json_available(client) {
+    return
+  }
 
   // 设置初始布尔值
   let _ = client.json_set("bool:1", "$", "{\"active\":true,\"verified\":false}")
@@ -233,6 +259,9 @@ async test "json boolean and misc operations" {
 async test "json error cases and edge conditions" {
   let client = connect("localhost", 6379)
   defer client.close()
+  if !redis_json_available(client) {
+    return
+  }
 
   // 测试不存在的键
   let nonexistent = client.json_get("nonexistent:key", "$")

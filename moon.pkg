@@ -1,9 +1,7 @@
 import {
   "moonbitlang/async/socket",
-  "moonbitlang/async/io",
   "moonbitlang/core/string",
   "moonbitlang/core/json",
-  "moonbitlang/core/buffer",
   "moonbitlang/core/debug",
   "moonbitlang/core/encoding/utf8" @encoding/utf8,
 }
@@ -11,3 +9,5 @@ import {
 import {
   "moonbitlang/async",
 } for "test"
+
+supported_targets = "+native"

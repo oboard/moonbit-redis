@@ -16,12 +16,12 @@ pub(all) enum RedisValue {
 } derive(Debug, Hash, Eq)
 
 ///|
-pub impl Show for RedisValue with output(self, logger : &Logger) -> Unit {
+pub impl Show for RedisValue with fn output(self, logger : &Logger) -> Unit {
   logger.write_string(@debug.to_string(self))
 }
 
 ///|
-pub impl Show for RedisValue with to_string(self) -> String {
+pub impl Show for RedisValue with fn to_string(self) -> String {
   @debug.to_string(self)
 }
 
@@ -64,7 +64,7 @@ pub(all) struct RedisStreamMessage {
 } derive(Debug)
 
 ///|
-pub impl Show for RedisStreamMessage with output(
+pub impl Show for RedisStreamMessage with fn output(
   self : RedisStreamMessage,
   logger : &Logger,
 ) -> Unit {
@@ -72,7 +72,9 @@ pub impl Show for RedisStreamMessage with output(
 }
 
 ///|
-pub impl Show for RedisStreamMessage with to_string(self : RedisStreamMessage) -> String {
+pub impl Show for RedisStreamMessage with fn to_string(
+  self : RedisStreamMessage,
+) -> String {
   @debug.to_string(self)
 }
 
@@ -83,12 +85,15 @@ pub(all) struct RedisStream {
 } derive(Debug)
 
 ///|
-pub impl Show for RedisStream with output(self : RedisStream, logger : &Logger) -> Unit {
+pub impl Show for RedisStream with fn output(
+  self : RedisStream,
+  logger : &Logger,
+) -> Unit {
   logger.write_string(@debug.to_string(self))
 }
 
 ///|
-pub impl Show for RedisStream with to_string(self : RedisStream) -> String {
+pub impl Show for RedisStream with fn to_string(self : RedisStream) -> String {
   @debug.to_string(self)
 }
 
@@ -216,18 +221,20 @@ pub fn RedisValue::to_bool(self : RedisValue) -> RedisBool {
 /// 将RedisValue转换为数组
 pub fn RedisValue::to_array(self : RedisValue) -> RedisArray {
   match self {
-    Array(arr) => {
-      let result = Array::new()
-      for item in arr {
-        match item.to_string() {
-          Ok(s) => result.push(s)
-          Err(_) => return Err("Array contains non-string elements")
-        }
-      }
-      Ok(result)
-    }
+    Array(arr) => Ok(arr.map(item => item.to_array_item_string()))
     Error(e) => Err(e)
     _ => Err("Type mismatch: expected array")
+  }
+}
+
+///|
+fn RedisValue::to_array_item_string(self : RedisValue) -> String {
+  match self {
+    SimpleString(s) | BulkString(Some(s)) => s
+    BulkString(None) => "null"
+    Integer(i) => i.to_string()
+    Array(arr) => "[\{arr.map(item => item.to_array_item_string()).join(", ")}]"
+    Error(e) => "ERR \{e}"
   }
 }
 

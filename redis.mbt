@@ -16,7 +16,7 @@ pub async fn RedisClient::send(
   args : Array[String],
 ) -> RedisValue {
   // println(args)
-  let buf = @buffer.new()
+  let buf = StringBuilder()
   buf.write_string("*" + args.length().to_string() + "\r\n")
   for arg in args {
     buf.write_string("$\{arg.length()}\r\n\{arg}\r\n")

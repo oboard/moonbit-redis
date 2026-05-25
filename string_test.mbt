@@ -1,5 +1,12 @@
 ///|
 /// String命令测试套件
+
+///|
+fn string_test_key(name : String) -> String {
+  "test:string:\{name}"
+}
+
+///|
 async test "string_ping" {
   let client = connect("localhost", 6379)
   defer client.close()
@@ -12,17 +19,19 @@ async test "string_ping" {
 async test "string_set_get" {
   let client = connect("localhost", 6379)
   defer client.close()
+  let key = string_test_key("set_get")
+  let _ = client.del([key])
 
   // 测试SET
-  let set_result = client.set("test:string", "hello_world")
+  let set_result = client.set(key, "hello_world")
   assert_true(set_result is Ok("OK"))
 
   // 测试GET
-  let get_result = client.get("test:string")
+  let get_result = client.get(key)
   assert_true(get_result is Ok("hello_world"))
 
   // 清理
-  let _ = client.del(["test:string"])
+  let _ = client.del([key])
 }
 
 ///|
@@ -30,20 +39,22 @@ async test "string_set_get" {
 async test "string_append" {
   let client = connect("localhost", 6379)
   defer client.close()
+  let key = string_test_key("append")
+  let _ = client.del([key])
 
   // 设置初始值
-  let _ = client.set("test:string", "hello")
+  let _ = client.set(key, "hello")
 
   // 测试APPEND
-  let append_result = client.append("test:string", "_world")
+  let append_result = client.append(key, "_world")
   assert_true(append_result is Ok(11)) // "hello_world"的长度
 
   // 验证结果
-  let get_result = client.get("test:string")
+  let get_result = client.get(key)
   assert_true(get_result is Ok("hello_world"))
 
   // 清理
-  let _ = client.del(["test:string"])
+  let _ = client.del([key])
 }
 
 ///|
@@ -51,20 +62,22 @@ async test "string_append" {
 async test "string_incr_decr" {
   let client = connect("localhost", 6379)
   defer client.close()
+  let key = string_test_key("counter")
+  let _ = client.del([key])
 
   // 设置初始值
-  let _ = client.set("test:counter", "10")
+  let _ = client.set(key, "10")
 
   // 测试INCR
-  let incr_result = client.incr("test:counter")
+  let incr_result = client.incr(key)
   assert_true(incr_result is Ok(11))
 
   // 测试DECR
-  let decr_result = client.decr("test:counter")
+  let decr_result = client.decr(key)
   assert_true(decr_result is Ok(10))
 
   // 清理
-  let _ = client.del(["test:counter"])
+  let _ = client.del([key])
 }
 
 ///|
@@ -72,16 +85,18 @@ async test "string_incr_decr" {
 async test "string_strlen" {
   let client = connect("localhost", 6379)
   defer client.close()
+  let key = string_test_key("strlen")
+  let _ = client.del([key])
 
   // 设置测试值
-  let _ = client.set("test:string", "hello")
+  let _ = client.set(key, "hello")
 
   // 测试STRLEN
-  let strlen_result = client.strlen("test:string")
+  let strlen_result = client.strlen(key)
   assert_true(strlen_result is Ok(5))
 
   // 清理
-  let _ = client.del(["test:string"])
+  let _ = client.del([key])
 }
 
 ///|
@@ -89,15 +104,18 @@ async test "string_strlen" {
 async test "string_mset_mget" {
   let client = connect("localhost", 6379)
   defer client.close()
+  let key1 = string_test_key("mset_mget_1")
+  let key2 = string_test_key("mset_mget_2")
+  let _ = client.del([key1, key2])
 
   // 测试MSET
-  let mset_result = client.mset({ "key1": "value1", "key2": "value2" })
+  let mset_result = client.mset(Map([(key1, "value1"), (key2, "value2")]))
   assert_true(mset_result is Ok("OK"))
 
   // 测试MGET
-  let mget_result = client.mget(["key1", "key2"])
+  let mget_result = client.mget([key1, key2])
   assert_true(mget_result is Ok(["value1", "value2"]))
 
   // 清理
-  let _ = client.del(["key1", "key2"])
+  let _ = client.del([key1, key2])
 }
