@@ -18,6 +18,8 @@ pub(all) enum Bit {
   Zero
   One
 }
+pub fn Bit::output(Self, &Logger) -> Unit
+pub fn Bit::to_string(Self) -> String
 pub impl Show for Bit
 
 pub(all) enum BitFieldEncoding {
@@ -30,6 +32,8 @@ pub(all) enum BitFieldEncoding {
   I32
   I64
 }
+pub fn BitFieldEncoding::output(Self, &Logger) -> Unit
+pub fn BitFieldEncoding::to_string(Self) -> String
 pub impl Show for BitFieldEncoding
 
 pub(all) enum BitFieldOperation {
@@ -59,6 +63,8 @@ pub(all) enum GeoUnits {
   Miles
   Feet
 }
+pub fn GeoUnits::output(Self, &Logger) -> Unit
+pub fn GeoUnits::to_string(Self) -> String
 pub impl Show for GeoUnits
 
 pub struct RedisClient {
@@ -390,12 +396,18 @@ pub(all) struct RedisStream {
   name : String
   messages : Array[RedisStreamMessage]
 } derive(@debug.Debug)
+pub fn RedisStream::output(Self, &Logger) -> Unit
+pub fn RedisStream::to_repr(Self) -> @debug.Repr
+pub fn RedisStream::to_string(Self) -> String
 pub impl Show for RedisStream
 
 pub(all) struct RedisStreamMessage {
   id : String
   fields : Array[String]
 } derive(@debug.Debug)
+pub fn RedisStreamMessage::output(Self, &Logger) -> Unit
+pub fn RedisStreamMessage::to_repr(Self) -> @debug.Repr
+pub fn RedisStreamMessage::to_string(Self) -> String
 pub impl Show for RedisStreamMessage
 
 pub(all) enum RedisValue {
@@ -405,11 +417,17 @@ pub(all) enum RedisValue {
   BulkString(String?)
   Array(Array[RedisValue])
 } derive(Eq, Hash, @debug.Debug)
+pub fn RedisValue::equal(Self, Self) -> Bool
+pub fn RedisValue::hash(Self) -> Int
+pub fn RedisValue::hash_combine(Self, Hasher) -> Unit
+pub fn RedisValue::not_equal(Self, Self) -> Bool
+pub fn RedisValue::output(Self, &Logger) -> Unit
 pub fn RedisValue::to_array(Self) -> Result[Array[String], String]
 pub fn RedisValue::to_bool(Self) -> Result[Bool, String]
 pub fn RedisValue::to_bulk_string(Self) -> Result[String?, String]
 pub fn RedisValue::to_int(Self) -> Result[Int, String]
 pub fn RedisValue::to_json(Self) -> Result[Json, String]
+pub fn RedisValue::to_repr(Self) -> @debug.Repr
 pub fn RedisValue::to_stream(Self) -> Result[RedisStream, String]
 pub fn RedisValue::to_stream_message_array(Self) -> Result[Array[RedisStreamMessage], String]
 pub fn RedisValue::to_string(Self) -> Result[String, String]
@@ -461,4 +479,3 @@ pub type RedisStreamResult = Result[RedisStream, String]
 pub type RedisString = Result[String, String]
 
 // Traits
-

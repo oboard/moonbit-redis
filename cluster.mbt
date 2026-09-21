@@ -15,7 +15,7 @@ pub async fn RedisClient::cluster_addslotsrange(
   self : RedisClient,
   ranges : Array[(Int, Int)],
 ) -> RedisString {
-  let range_strings = Array::new()
+  let range_strings = []
   for range in ranges {
     let (start, end) = range
     range_strings.push(start.to_string())
@@ -61,7 +61,7 @@ pub async fn RedisClient::cluster_delslotsrange(
   self : RedisClient,
   ranges : Array[(Int, Int)],
 ) -> RedisString {
-  let range_strings = Array::new()
+  let range_strings = []
   for range in ranges {
     let (start, end) = range
     range_strings.push(start.to_string())

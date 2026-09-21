@@ -15,9 +15,9 @@ async test "zset_zadd_zrem" {
 
   // 测试ZADD - 使用批量添加
   let zadd_result = client.zadd(key, [
-    { score: "1", value: "member1" },
-    { score: "2", value: "member2" },
-    { score: "3", value: "member3" },
+    { score: "1", value: "member1", },
+    { score: "2", value: "member2", },
+    { score: "3", value: "member3", },
   ])
   assert_true(zadd_result is Ok(3)) // 添加了3个成员
 
@@ -39,9 +39,9 @@ async test "zset_zcard" {
 
   // 准备数据
   let _ = client.zadd(key, [
-    { score: "1", value: "member1" },
-    { score: "2", value: "member2" },
-    { score: "3", value: "member3" },
+    { score: "1", value: "member1", },
+    { score: "2", value: "member2", },
+    { score: "3", value: "member3", },
   ])
 
   // 测试ZCARD
@@ -62,8 +62,8 @@ async test "zset_zscore" {
 
   // 准备数据
   let _ = client.zadd(key, [
-    { score: "1.5", value: "member1" },
-    { score: "2.5", value: "member2" },
+    { score: "1.5", value: "member1", },
+    { score: "2.5", value: "member2", },
   ])
 
   // 测试ZSCORE
@@ -84,9 +84,9 @@ async test "zset_zrank" {
 
   // 准备数据
   let _ = client.zadd(key, [
-    { score: "1", value: "member1" },
-    { score: "2", value: "member2" },
-    { score: "3", value: "member3" },
+    { score: "1", value: "member1", },
+    { score: "2", value: "member2", },
+    { score: "3", value: "member3", },
   ])
 
   // 测试ZRANK
@@ -107,9 +107,9 @@ async test "zset_zrange" {
 
   // 准备数据
   let _ = client.zadd(key, [
-    { score: "1", value: "member1" },
-    { score: "2", value: "member2" },
-    { score: "3", value: "member3" },
+    { score: "1", value: "member1", },
+    { score: "2", value: "member2", },
+    { score: "3", value: "member3", },
   ])
 
   // 测试ZRANGE
@@ -130,9 +130,9 @@ async test "zset_zrevrange" {
 
   // 准备数据
   let _ = client.zadd(key, [
-    { score: "1", value: "member1" },
-    { score: "2", value: "member2" },
-    { score: "3", value: "member3" },
+    { score: "1", value: "member1", },
+    { score: "2", value: "member2", },
+    { score: "3", value: "member3", },
   ])
 
   // 测试ZREVRANGE
@@ -153,7 +153,7 @@ async test "zset_zincrby" {
   // 清理
   let _ = client.del([key])
   // 准备数据
-  let _ = client.zadd(key, [{ score: "1", value: "member1" }])
+  let _ = client.zadd(key, [{ score: "1", value: "member1", }])
 
   // 测试ZINCRBY
   let zincrby_result = client.zincrby(key, increment="2.5", value="member1")

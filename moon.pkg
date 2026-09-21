@@ -3,6 +3,7 @@ import {
   "moonbitlang/core/string",
   "moonbitlang/core/json",
   "moonbitlang/core/debug",
+  "moonbitlang/core/builtin",
   "moonbitlang/core/encoding/utf8" @encoding/utf8,
 }
 

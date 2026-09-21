@@ -5,6 +5,9 @@ pub(all) enum Bit {
 }
 
 ///|
+pub extend Bit with Show::{to_string, output}
+
+///|
 pub(all) enum BitFieldEncoding {
   U8
   U16
@@ -17,6 +20,9 @@ pub(all) enum BitFieldEncoding {
 }
 
 ///|
+pub extend BitFieldEncoding with Show::{to_string, output}
+
+///|
 pub(all) enum BitFieldOperation {
   Get(encoding~ : BitFieldEncoding, offset~ : Int)
   Set(encoding~ : BitFieldEncoding, offset~ : Int, value~ : Bit)
@@ -25,12 +31,12 @@ pub(all) enum BitFieldOperation {
 }
 
 ///|
-pub impl Show for BitFieldEncoding with output(self, logger : &Logger) -> Unit {
+pub impl Show for BitFieldEncoding with fn output(self, logger : &Logger) -> Unit {
   logger.write_string(self.to_string())
 }
 
 ///|
-pub impl Show for BitFieldEncoding with to_string(self) -> String {
+pub impl Show for BitFieldEncoding with fn to_string(self) -> String {
   match self {
     U8 => "u8"
     U16 => "u16"
@@ -56,12 +62,12 @@ pub fn BitFieldOperation::to_array(self : BitFieldOperation) -> Array[String] {
 }
 
 ///|
-pub impl Show for Bit with output(self : Bit, logger : &Logger) -> Unit {
+pub impl Show for Bit with fn output(self : Bit, logger : &Logger) -> Unit {
   logger.write_string(self.to_string())
 }
 
 ///|
-pub impl Show for Bit with to_string(self : Bit) -> String {
+pub impl Show for Bit with fn to_string(self : Bit) -> String {
   match self {
     Zero => "0"
     One => "1"

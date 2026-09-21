@@ -16,6 +16,18 @@ pub(all) enum RedisValue {
 } derive(Debug, Hash, Eq)
 
 ///|
+pub extend RedisValue with @moonbitlang/core/debug.Debug::{to_repr}
+
+///|
+pub extend RedisValue with @moonbitlang/core/builtin.Hash::{hash, hash_combine}
+
+///|
+pub extend RedisValue with @moonbitlang/core/builtin.Eq::{equal, not_equal}
+
+///|
+pub extend RedisValue with Show::{output}
+
+///|
 pub impl Show for RedisValue with fn output(self, logger : &Logger) -> Unit {
   logger.write_string(@debug.to_string(self))
 }
@@ -64,6 +76,12 @@ pub(all) struct RedisStreamMessage {
 } derive(Debug)
 
 ///|
+pub extend RedisStreamMessage with @moonbitlang/core/debug.Debug::{to_repr}
+
+///|
+pub extend RedisStreamMessage with Show::{to_string, output}
+
+///|
 pub impl Show for RedisStreamMessage with fn output(
   self : RedisStreamMessage,
   logger : &Logger,
@@ -83,6 +101,12 @@ pub(all) struct RedisStream {
   name : String
   messages : Array[RedisStreamMessage]
 } derive(Debug)
+
+///|
+pub extend RedisStream with @moonbitlang/core/debug.Debug::{to_repr}
+
+///|
+pub extend RedisStream with Show::{to_string, output}
 
 ///|
 pub impl Show for RedisStream with fn output(
@@ -113,7 +137,7 @@ pub fn RedisValue::to_stream(self : RedisValue) -> RedisStreamResult {
               Array(msg_array) => parse_stream_messages(msg_array)
               _ => []
             }
-            Ok({ name: stream_name, messages })
+            Ok({ name: stream_name, messages, })
           } else {
             Err("Invalid stream data: expected array with at least 2 elements")
           }
@@ -128,7 +152,7 @@ pub fn RedisValue::to_stream(self : RedisValue) -> RedisStreamResult {
 fn parse_stream_messages(
   msg_array : Array[RedisValue],
 ) -> Array[RedisStreamMessage] {
-  let messages = Array::new()
+  let messages = []
   for msg in msg_array {
     match msg {
       Array(msg_data) =>
@@ -139,7 +163,7 @@ fn parse_stream_messages(
           }
           let fields = match msg_data[1] {
             Array(field_array) => {
-              let field_strings = Array::new()
+              let field_strings = []
               for field in field_array {
                 match field.to_string() {
                   Ok(field_str) => field_strings.push(field_str)
@@ -150,7 +174,7 @@ fn parse_stream_messages(
             }
             _ => []
           }
-          messages.push({ id, fields })
+          messages.push({ id, fields, })
         }
       _ => ()
     }
@@ -335,7 +359,7 @@ fn parse_array_value(response : String) -> RedisValue {
     }
     pos = pos + 1
   }
-  let elements = Array::new()
+  let elements = []
   let mut current_pos = pos
 
   // 解析每个元素

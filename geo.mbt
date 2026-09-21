@@ -18,6 +18,9 @@ pub(all) enum GeoUnits {
 }
 
 ///|
+pub extend GeoUnits with Show::{to_string, output}
+
+///|
 pub(all) struct GeoSearchByBox {
   width : Int
   height : Int
@@ -30,12 +33,12 @@ pub fn GeoSearchByBox::to_array(self : GeoSearchByBox) -> Array[String] {
 }
 
 ///|
-pub impl Show for GeoUnits with output(self : GeoUnits, logger : &Logger) -> Unit {
+pub impl Show for GeoUnits with fn output(self : GeoUnits, logger : &Logger) -> Unit {
   logger.write_string(self.to_string())
 }
 
 ///|
-pub impl Show for GeoUnits with to_string(self : GeoUnits) -> String {
+pub impl Show for GeoUnits with fn to_string(self : GeoUnits) -> String {
   match self {
     Meters => "m"
     Kilometers => "km"

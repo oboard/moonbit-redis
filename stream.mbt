@@ -93,12 +93,12 @@ pub(all) enum XTrimStrategy {
 }
 
 ///|
-impl Show for XTrimStrategy with output(self, logger) {
-  logger.write_string(self.to_string())
+impl Show for XTrimStrategy with fn output(self, logger) {
+  logger.write_string(Show::to_string(self))
 }
 
 ///|
-impl Show for XTrimStrategy with to_string(self) {
+impl Show for XTrimStrategy with fn to_string(self) {
   match self {
     MaxLen => "MAXLEN"
     MinID => "MINID"
@@ -118,7 +118,7 @@ pub async fn RedisClient::xtrim(
   delref? : Bool = false,
   acked? : Bool = false,
 ) -> RedisInt {
-  let args = ["XTRIM", key, strategy.to_string()]
+  let args = ["XTRIM", key, Show::to_string(strategy)]
   if approximate {
     args.push("~")
   }
