@@ -8,7 +8,7 @@ fn set_test_key(name : String) -> String {
 ///|
 /// 测试SADD和SREM命令
 async test "set_sadd_srem" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = set_test_key("sadd_srem")
   let _ = client.del([key])
@@ -28,7 +28,7 @@ async test "set_sadd_srem" {
 ///|
 /// 测试SCARD命令
 async test "set_scard" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = set_test_key("scard")
   let _ = client.del([key])
@@ -47,7 +47,7 @@ async test "set_scard" {
 ///|
 /// 测试SISMEMBER命令
 async test "set_sismember" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = set_test_key("sismember")
   let _ = client.del([key])
@@ -70,7 +70,7 @@ async test "set_sismember" {
 ///|
 /// 测试SMEMBERS命令
 async test "set_smembers" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = set_test_key("smembers")
   let _ = client.del([key])
@@ -98,7 +98,7 @@ async test "set_smembers" {
 ///|
 /// 测试SPOP命令
 async test "set_spop" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = set_test_key("spop")
   let _ = client.del([key])
@@ -122,7 +122,7 @@ async test "set_spop" {
 ///|
 /// 测试SRANDMEMBER命令
 async test "set_srandmember" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = set_test_key("srandmember")
 

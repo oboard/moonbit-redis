@@ -9,7 +9,7 @@ fn stream_test_key(name : String) -> String {
 ///|
 /// 测试XADD命令 - 添加条目到流
 async test "stream_xadd" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = stream_test_key("xadd")
   let _ = client.del([key])
@@ -28,7 +28,7 @@ async test "stream_xadd" {
 ///|
 /// 测试XLEN命令 - 获取流长度
 async test "stream_xlen" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = stream_test_key("xlen")
   let _ = client.del([key])
@@ -48,7 +48,7 @@ async test "stream_xlen" {
 ///|
 /// 测试XRANGE命令 - 范围查询
 async test "stream_xrange" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = stream_test_key("xrange")
   let _ = client.del([key])
@@ -72,7 +72,7 @@ async test "stream_xrange" {
 ///|
 /// 测试XREVRANGE命令 - 反向范围查询
 async test "stream_xrevrange" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = stream_test_key("xrevrange")
 
@@ -93,7 +93,7 @@ async test "stream_xrevrange" {
 ///|
 /// 测试XDEL命令 - 删除流条目
 async test "stream_xdel" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = stream_test_key("xdel")
 
@@ -120,7 +120,7 @@ async test "stream_xdel" {
 ///|
 /// 测试XTRIM命令 - 修剪流
 async test "stream_xtrim" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = stream_test_key("xtrim")
   let _ = client.del([key])
@@ -152,7 +152,7 @@ async test "stream_xtrim" {
 ///|
 /// 测试消费者组基本操作
 async test "stream_consumer_group_basic" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = stream_test_key("consumer_group_basic")
   let _ = client.del([key])
@@ -187,7 +187,7 @@ async test "stream_consumer_group_basic" {
 ///|
 /// 测试XREAD命令 - 读取流条目
 async test "stream_xread" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = stream_test_key("xread")
   let _ = client.del([key])
@@ -207,7 +207,7 @@ async test "stream_xread" {
 ///|
 /// 测试消费者组读取和确认
 async test "stream_consumer_group_read_ack" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = stream_test_key("consumer_group_read_ack")
   let _ = client.del([key])
@@ -237,7 +237,7 @@ async test "stream_consumer_group_read_ack" {
 ///|
 /// 测试XPENDING命令 - 查看待处理消息
 async test "stream_xpending" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = stream_test_key("xpending")
   let _ = client.del([key])
@@ -263,7 +263,7 @@ async test "stream_xpending" {
 ///|
 /// 测试XINFO命令 - 获取流信息
 async test "stream_xinfo" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = stream_test_key("xinfo")
   let _ = client.del([key])
@@ -297,7 +297,7 @@ async test "stream_xinfo" {
 ///|
 /// 测试复杂的流操作场景
 async test "stream_complex_scenario" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = stream_test_key("orders")
 
@@ -365,7 +365,7 @@ async test "stream_complex_scenario" {
 ///|
 /// 测试边界情况和错误处理
 async test "stream_edge_cases" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = stream_test_key("edge_cases")
   let missing_key = stream_test_key("missing_edge_cases")

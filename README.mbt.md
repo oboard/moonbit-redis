@@ -29,7 +29,7 @@ async test "string_set_get" {
 ///|
 async test "ping" {
   @async.with_task_group(async fn(_root) {
-    let client = @redis.connect("localhost", 6379)
+    let client = @redis.connect("localhost", port=6379)
     defer client.close()
     let pong = client.ping()
     assert_true(pong is Ok("PONG"))

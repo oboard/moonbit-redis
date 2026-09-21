@@ -8,7 +8,7 @@ fn sorted_set_test_key(name : String) -> String {
 ///|
 /// 测试ZADD和ZREM命令
 async test "zset_zadd_zrem" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = sorted_set_test_key("zadd_zrem")
   let _ = client.del([key])
@@ -32,7 +32,7 @@ async test "zset_zadd_zrem" {
 ///|
 /// 测试ZCARD命令
 async test "zset_zcard" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = sorted_set_test_key("zcard")
   let _ = client.del([key])
@@ -55,7 +55,7 @@ async test "zset_zcard" {
 ///|
 /// 测试ZSCORE命令
 async test "zset_zscore" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = sorted_set_test_key("zscore")
   let _ = client.del([key])
@@ -77,7 +77,7 @@ async test "zset_zscore" {
 ///|
 /// 测试ZRANK命令
 async test "zset_zrank" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = sorted_set_test_key("zrank")
   let _ = client.del([key])
@@ -100,7 +100,7 @@ async test "zset_zrank" {
 ///|
 /// 测试ZRANGE命令
 async test "zset_zrange" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = sorted_set_test_key("zrange")
   let _ = client.del([key])
@@ -123,7 +123,7 @@ async test "zset_zrange" {
 ///|
 /// 测试ZREVRANGE命令
 async test "zset_zrevrange" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = sorted_set_test_key("zrevrange")
   let _ = client.del([key])
@@ -146,7 +146,7 @@ async test "zset_zrevrange" {
 ///|
 /// 测试ZINCRBY命令
 async test "zset_zincrby" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = sorted_set_test_key("zincrby")
 

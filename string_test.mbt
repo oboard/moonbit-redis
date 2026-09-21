@@ -8,7 +8,7 @@ fn string_test_key(name : String) -> String {
 
 ///|
 async test "string_ping" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let pong = client.ping()
   assert_true(pong is Ok("PONG"))
@@ -17,7 +17,7 @@ async test "string_ping" {
 ///|
 /// 测试SET和GET命令
 async test "string_set_get" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = string_test_key("set_get")
   let _ = client.del([key])
@@ -37,7 +37,7 @@ async test "string_set_get" {
 ///|
 /// 测试APPEND命令
 async test "string_append" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = string_test_key("append")
   let _ = client.del([key])
@@ -60,7 +60,7 @@ async test "string_append" {
 ///|
 /// 测试INCR和DECR命令
 async test "string_incr_decr" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = string_test_key("counter")
   let _ = client.del([key])
@@ -83,7 +83,7 @@ async test "string_incr_decr" {
 ///|
 /// 测试STRLEN命令
 async test "string_strlen" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = string_test_key("strlen")
   let _ = client.del([key])
@@ -102,7 +102,7 @@ async test "string_strlen" {
 ///|
 /// 测试MSET和MGET命令
 async test "string_mset_mget" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key1 = string_test_key("mset_mget_1")
   let key2 = string_test_key("mset_mget_2")

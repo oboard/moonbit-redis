@@ -2,7 +2,7 @@
 // 需要 Redis 服务器 6.2 或以上版本 才能运行 JSON 命令
 
 ///|
-async fn redis_json_available(client : RedisClient) -> Bool {
+async fn redis_json_available(client : @redis.RedisClient) -> Bool {
   match client.json_get("__moonbit_redis_json_probe__", "$") {
     Err(message) => !message.contains("unknown command")
     _ => true
@@ -12,7 +12,7 @@ async fn redis_json_available(client : RedisClient) -> Bool {
 ///|
 /// 测试基础 JSON 操作：SET, GET, DEL, TYPE
 async test "json basic operations" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   if !redis_json_available(client) {
     return
@@ -61,7 +61,7 @@ async test "json basic operations" {
 ///|
 /// 测试 JSON 数组操作
 async test "json array operations" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   if !redis_json_available(client) {
     return
@@ -117,7 +117,7 @@ async test "json array operations" {
 ///|
 /// 测试 JSON 对象操作
 async test "json object operations" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   if !redis_json_available(client) {
     return
@@ -153,7 +153,7 @@ async test "json object operations" {
 ///|
 /// 测试 JSON 数值操作
 async test "json numeric operations" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   if !redis_json_available(client) {
     return
@@ -181,7 +181,7 @@ async test "json numeric operations" {
 ///|
 /// 测试 JSON 字符串操作
 async test "json string operations" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   if !redis_json_available(client) {
     return
@@ -211,7 +211,7 @@ async test "json string operations" {
 ///|
 /// 测试 JSON 布尔值和其他操作
 async test "json boolean and misc operations" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   if !redis_json_available(client) {
     return
@@ -257,7 +257,7 @@ async test "json boolean and misc operations" {
 ///|
 /// 测试错误情况和边界条件
 async test "json error cases and edge conditions" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   if !redis_json_available(client) {
     return

@@ -3,7 +3,7 @@
 ///|
 /// Test publish command
 async test "publish command" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
 
   // Test publish to a channel
@@ -13,9 +13,9 @@ async test "publish command" {
 
 ///|
 async test "complex subscription scenario" {
-  let client1 = connect("localhost", 6379)
-  let client2 = connect("localhost", 6379)
-  let client3 = connect("localhost", 6379)
+  let client1 = @redis.connect("localhost", port=6379)
+  let client2 = @redis.connect("localhost", port=6379)
+  let client3 = @redis.connect("localhost", port=6379)
 
   // Client 1: Subscribe to regular channels
   let _ = client1.subscribe(["news", "sports"])

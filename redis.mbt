@@ -4,8 +4,12 @@ pub struct RedisClient {
 }
 
 ///|
-pub async fn connect(host : String, port : Int) -> RedisClient {
-  let conn = @socket.Tcp::connect_to_host(host, port~)
+pub async fn connect(
+  host : StringView,
+  port? : Int = 6379,
+  protocol? : @socket.IpProtocolPreference,
+) -> RedisClient {
+  let conn = @socket.Tcp::connect_to_host(host, port~, protocol?)
   conn.enable_keepalive()
   { conn, }
 }

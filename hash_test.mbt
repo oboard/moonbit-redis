@@ -8,7 +8,7 @@ fn hash_test_key(name : String) -> String {
 ///|
 /// 测试HSET和HGET命令
 async test "hash_hset_hget" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = hash_test_key("hset_hget")
   let _ = client.del([key])
@@ -28,7 +28,7 @@ async test "hash_hset_hget" {
 ///|
 /// 测试HDEL命令
 async test "hash_hdel" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = hash_test_key("hdel")
   let _ = client.del([key])
@@ -48,7 +48,7 @@ async test "hash_hdel" {
 ///|
 /// 测试HKEYS和HVALS命令
 async test "hash_hkeys_hvals" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = hash_test_key("hkeys_hvals")
   let _ = client.del([key])
@@ -72,7 +72,7 @@ async test "hash_hkeys_hvals" {
 ///|
 /// 测试HGETALL命令
 async test "hash_hgetall" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = hash_test_key("hgetall")
   let _ = client.del([key])
@@ -92,7 +92,7 @@ async test "hash_hgetall" {
 ///|
 /// 测试HEXISTS和HLEN命令
 async test "hash_hexists_hlen" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = hash_test_key("hexists_hlen")
   let _ = client.del([key])
@@ -120,7 +120,7 @@ async test "hash_hexists_hlen" {
 ///|
 /// 测试HSET多个字段
 async test "hash_multiple_fields" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = hash_test_key("multiple_fields")
   let _ = client.del([key])
@@ -141,7 +141,7 @@ async test "hash_multiple_fields" {
 ///|
 /// 测试hash字段操作
 async test "hash_field_operations" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = hash_test_key("field_operations")
   let _ = client.del([key])

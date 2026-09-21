@@ -8,7 +8,7 @@ fn list_test_key(name : String) -> String {
 ///|
 /// 测试LPUSH和RPUSH命令
 async test "list_push" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = list_test_key("push")
   let _ = client.del([key])
@@ -28,7 +28,7 @@ async test "list_push" {
 ///|
 /// 测试LPOP和RPOP命令
 async test "list_pop" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = list_test_key("pop")
   let _ = client.del([key])
@@ -51,7 +51,7 @@ async test "list_pop" {
 ///|
 /// 测试LLEN命令
 async test "list_llen" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = list_test_key("llen")
 
@@ -72,7 +72,7 @@ async test "list_llen" {
 ///|
 /// 测试LRANGE命令
 async test "list_lrange" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = list_test_key("lrange")
 
@@ -92,7 +92,7 @@ async test "list_lrange" {
 ///|
 /// 测试LINDEX命令
 async test "list_lindex" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = list_test_key("lindex")
   let _ = client.del([key])
@@ -111,7 +111,7 @@ async test "list_lindex" {
 ///|
 /// 测试LREM命令
 async test "list_lrem" {
-  let client = connect("localhost", 6379)
+  let client = @redis.connect("localhost", port=6379)
   defer client.close()
   let key = list_test_key("lrem")
   let _ = client.del([key])
