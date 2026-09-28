@@ -36,3 +36,25 @@ async test "ping" {
   })
 }
 ```
+
+### Authentication and Database Selection
+`connect` accepts optional `password?`, `username?` (Redis 6+ ACL) and `db?`
+arguments. AUTH and SELECT are sent automatically after the connection is
+established; failures raise `ConnectError` and close the connection.
+```moonbit nocheck
+///|
+async test "connect_with_auth" {
+  @async.with_task_group(async fn(_root) {
+    let client = @redis.connect(
+      "localhost",
+      port=6379,
+      username="default",
+      password="secret",
+      db=1,
+    )
+    defer client.close()
+    let pong = client.ping()
+    assert_true(pong is Ok("PONG"))
+  })
+}
+```

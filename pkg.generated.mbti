@@ -7,11 +7,15 @@ import {
 }
 
 // Values
-pub async fn connect(StringView, port? : Int, protocol? : @socket.IpProtocolPreference) -> RedisClient
+pub async fn connect(StringView, port? : Int, protocol? : @socket.IpProtocolPreference, username? : String, password? : String, db? : Int) -> RedisClient
 
 pub fn parse_redis_response(String) -> RedisValue
 
 // Errors
+pub(all) suberror ConnectError {
+  AuthFailed(String)
+  SelectFailed(String)
+}
 
 // Types and methods
 pub(all) enum Bit {

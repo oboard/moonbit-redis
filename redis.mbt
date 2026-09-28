@@ -4,14 +4,66 @@ pub struct RedisClient {
 }
 
 ///|
+/// 连接建立过程中的错误
+pub(all) suberror ConnectError {
+  /// AUTH 认证失败
+  AuthFailed(String)
+  /// SELECT 选择数据库失败
+  SelectFailed(String)
+}
+
+///|
+/// 建立到 Redis 服务器的连接。
+///
+/// 连接建立后可选地自动完成认证和选库：
+/// - `password?`：提供时自动发送 AUTH；
+///   同时提供 `username?` 时使用 Redis 6+ ACL 形式 `AUTH <username> <password>`。
+///   单独提供 `username?` 而不提供 `password?` 时不发送 AUTH（Redis 没有仅用户名的认证）。
+/// - `db?`：提供时自动发送 `SELECT <db>` 切换到指定数据库。
+///
+/// 认证或选库失败时会关闭连接并抛出 `ConnectError`。
 pub async fn connect(
   host : StringView,
   port? : Int = 6379,
   protocol? : @socket.IpProtocolPreference,
+  username? : String,
+  password? : String,
+  db? : Int,
 ) -> RedisClient {
   let conn = @socket.Tcp::connect_to_host(host, port~, protocol?)
   conn.enable_keepalive()
-  { conn, }
+  let client : RedisClient = { conn, }
+  if password is Some(password) {
+    let args = match username {
+      Some(username) => ["AUTH", username, password]
+      None => ["AUTH", password]
+    }
+    match client.send(args) {
+      SimpleString("OK") => ()
+      Error(e) => {
+        client.close()
+        raise AuthFailed(e)
+      }
+      resp => {
+        client.close()
+        raise AuthFailed("unexpected response: \{resp}")
+      }
+    }
+  }
+  if db is Some(db) {
+    match client.send(["SELECT", db.to_string()]) {
+      SimpleString("OK") => ()
+      Error(e) => {
+        client.close()
+        raise SelectFailed(e)
+      }
+      resp => {
+        client.close()
+        raise SelectFailed("unexpected response: \{resp}")
+      }
+    }
+  }
+  client
 }
 
 ///|
