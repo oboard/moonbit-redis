@@ -49,15 +49,6 @@ jobs:
         run: |
           moon info --target all
           git diff --exit-code
-      
-      - name: download testsuite (Unix)
-        if: ${{ matrix.os != 'windows-latest' }}
-        run: sh scripts/init.sh
-
-      - name: download testsuite (Windows)
-        if: ${{ matrix.os == 'windows-latest' }}
-        shell: pwsh
-        run: ./scripts/init.ps1
 
       - name: Setup MSVC
         if: ${{ matrix.os == 'windows-latest' }}
