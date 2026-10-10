@@ -50,9 +50,33 @@ jobs:
           moon info --target all
           git diff --exit-code
 
-      - name: Setup MSVC
-        if: ${{ matrix.os == 'windows-latest' }}
-        uses: ilammy/msvc-dev-cmd@v1
+  test:
+    strategy:
+      matrix:
+        channel: [latest, nightly]
+      fail-fast: false
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.channel == 'nightly' }}
+    services:
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash -s ${{ matrix.channel }}
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+
+      - name: install deps
+        run: moon update
 
       - name: Run moon test
         run: |

@@ -198,7 +198,7 @@ async test "stream_xread" {
 
   // 测试XREAD
   let read_result = client.xread(count=10, [(key, "0")])
-  assert_true(read_result.map(i => i.messages.length() > 0).or(false))
+  assert_true(read_result.map(i => i.messages.length() > 0).unwrap_or(false))
 
   // 清理
   let _ = client.del([key])
@@ -223,7 +223,9 @@ async test "stream_consumer_group_read_ack" {
   let readgroup_result = client.xreadgroup("test_group", "consumer1", count=1, [
     (key, ">"),
   ])
-  assert_true(readgroup_result.map(i => i.messages.length() > 0).or(false))
+  assert_true(
+    readgroup_result.map(i => i.messages.length() > 0).unwrap_or(false),
+  )
 
   // 测试XACK
   let ack_result = client.xack(key, "test_group", [id1])
