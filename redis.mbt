@@ -73,12 +73,12 @@ pub async fn RedisClient::send(
 ) -> RedisValue {
   // println(args)
   let buf = StringBuilder()
-  buf.write_string("*" + args.length().to_string() + "\r\n")
+  buf <+ "*\{args.length().to_string()}\r\n"
   for arg in args {
     // `$<len>` counts bytes, not characters: `length()` truncates every multi-byte
     // payload and leaves the remaining bytes in the socket as a stray command
     let byte_len = @encoding/utf8.encode(arg).length()
-    buf.write_string("$\{byte_len.to_string()}\r\n\{arg}\r\n")
+    buf <+ "$\{byte_len.to_string()}\r\n\{arg}\r\n"
   }
   self.conn.write(buf.to_string())
   self.read_redis_value()
