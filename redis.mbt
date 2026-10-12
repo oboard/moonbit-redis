@@ -75,29 +75,105 @@ pub async fn RedisClient::send(
   let buf = StringBuilder()
   buf.write_string("*" + args.length().to_string() + "\r\n")
   for arg in args {
-    buf.write_string("$\{arg.length()}\r\n\{arg}\r\n")
+    // `$<len>` counts bytes, not characters: `length()` truncates every multi-byte
+    // payload and leaves the remaining bytes in the socket as a stray command
+    let byte_len = @encoding/utf8.encode(arg).length()
+    buf.write_string("$\{byte_len.to_string()}\r\n\{arg}\r\n")
   }
   self.conn.write(buf.to_string())
   self.read_redis_value()
 }
 
 ///|
+/// Read exactly one RESP2 reply: take the header line from the stream, then read a
+/// bulk body by its declared byte length instead of "whatever one socket read
+/// happens to return".
+async fn RedisClient::read_value(self : RedisClient) -> RedisValue {
+  match self.conn.read_until("\r\n") {
+    None => Error("Connection closed")
+    Some(line) =>
+      if line.length() == 0 {
+        Error("Empty response")
+      } else {
+        let tag = line[0]
+        let body = line[1:line.length()].to_owned()
+        match tag {
+          '+' => SimpleString(body)
+          '-' => Error(body)
+          ':' =>
+            match parse_int_opt(body) {
+              Some(number) => Integer(number)
+              None => Error("Invalid integer: " + body)
+            }
+          '$' => self.read_bulk(body)
+          '*' => self.read_array(body)
+          _ => Error("Unknown response type")
+        }
+      }
+  }
+}
+
+///|
+/// Read a bulk body: `$-1` is an absent value, otherwise exactly `len` bytes plus
+/// the trailing CRLF.
+async fn RedisClient::read_bulk(
+  self : RedisClient,
+  len_text : String,
+) -> RedisValue {
+  match parse_int_opt(len_text) {
+    None => Error("Invalid bulk length: " + len_text)
+    Some(len) =>
+      if len < 0 {
+        BulkString(None)
+      } else {
+        let payload = Some(self.conn.read_exactly(len + 2)) catch { _ => None }
+        match payload {
+          None => Error("Connection closed while reading bulk reply")
+          Some(data) => BulkString(Some(decode_span(data, 0, len)))
+        }
+      }
+  }
+}
+
+///|
+/// Read `count` nested replies, each framed on its own.
+async fn RedisClient::read_array(
+  self : RedisClient,
+  count_text : String,
+) -> RedisValue {
+  match parse_int_opt(count_text) {
+    None => Error("Invalid array count: " + count_text)
+    Some(count) =>
+      if count < 0 {
+        Array([])
+      } else {
+        let items : Array[RedisValue] = []
+        for _ in 0..<count {
+          items.push(self.read_value())
+        }
+        Array(items)
+      }
+  }
+}
+
+///|
+/// Return the payload of the next reply as text. Kept for source compatibility;
+/// `send` and `read_redis_value` give the framed, typed result.
 pub async fn RedisClient::read_response(self : RedisClient) -> String {
-  let buf = FixedArray::make(4096, b'0')
-  if self.conn.read(buf) is n && n > 0 {
-    let response_bytes = buf.unsafe_reinterpret_as_bytes()[0:n]
-    @encoding/utf8.decode(response_bytes)
-  } else {
-    ""
+  let value = self.read_value()
+  match value {
+    SimpleString(text) | BulkString(Some(text)) => text
+    BulkString(None) => ""
+    Integer(number) => number.to_string()
+    Error(message) => "ERR " + message
+    Array(items) => items.map(item => item.to_array_item_string()).join(" ")
   }
 }
 
 ///|
 /// 读取Redis响应并解析为RedisValue类型
 pub async fn RedisClient::read_redis_value(self : RedisClient) -> RedisValue {
-  let raw_response = self.read_response()
-  // println(raw_response)
-  parse_redis_response(raw_response)
+  self.read_value()
 }
 
 ///|
